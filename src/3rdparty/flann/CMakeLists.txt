@@ -59,8 +59,8 @@ set(TEST_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/test)
 # endif()
 
 # if (NOT BUILD_C_BINDINGS)
-    set(BUILD_PYTHON_BINDINGS false)
-    set(BUILD_MATLAB_BINDINGS false)
+    set(BUILD_PYTHON_BINDINGS OFF)
+    set(BUILD_MATLAB_BINDINGS OFF)
 # endif()
 
 message("Building C bindings: ${BUILD_C_BINDINGS}")
