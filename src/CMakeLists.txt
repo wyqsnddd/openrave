@@ -185,6 +185,8 @@ install(FILES ${CMAKE_CURRENT_BINARY_DIR}/openrave-config.cmake ${CMAKE_CURRENT_
 # 	install(EXPORT OpenRAVEDebugTargets DESTINATION lib/cmake/openrave)
 # endif()
 
+add_subdirectory(plugins)
+
 # ========== MY PHONY COMMANDS ==========
 add_custom_target(distclean
     COMMAND make clean && 
