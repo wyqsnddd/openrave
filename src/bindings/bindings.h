@@ -46,7 +46,7 @@
 #define FOREACHC_NOINC(it, v) for(BOOST_TYPEOF(v) ::const_iterator it = (v).begin(); it != (v).end(); )
 #define RAVE_REGISTER_BOOST
 
-#else
+#else // _MSC_VER
 #include <string>
 #include <vector>
 #include <list>
@@ -60,15 +60,15 @@
 #include <typeinfo>
 #define FOREACH(it, v) for(decltype((v).begin()) it = (v).begin(); it != (v).end(); (it)++)
 #define FOREACH_NOINC(it, v) for(decltype((v).begin()) it = (v).begin(); it != (v).end(); )
-#else
+#else // __cplusplus > 199711L || defined(__GXX_EXPERIMENTAL_CXX0X__)
 #define FOREACH(it, v) for(typeof((v).begin())it = (v).begin(); it != (v).end(); (it)++)
 #define FOREACH_NOINC(it, v) for(typeof((v).begin())it = (v).begin(); it != (v).end(); )
-#endif
+#endif // __cplusplus > 199711L || defined(__GXX_EXPERIMENTAL_CXX0X__)
 
 #define FOREACHC FOREACH
 #define FOREACHC_NOINC FOREACH_NOINC
 
-#endif
+#endif // // _MSC_VER
 
 #include <complex>
 #include <algorithm>
@@ -76,9 +76,9 @@
 // is_none is not supported by older versions of python
 #if BOOST_VERSION >= 104300
 #define IS_PYTHONOBJECT_NONE(o) (o).is_none()
-#else
+#else // BOOST_VERSION >= 104300
 #define IS_PYTHONOBJECT_NONE(o) (!!(o))
-#endif
+#endif // BOOST_VERSION >= 104300
 
 namespace openravepy {
 
@@ -517,8 +517,8 @@ inline numeric::array toPyArray(const boost::array<T,N>& v)
     return toPyArrayN(&v[0],v.size());
 }
 
-#endif
+#endif // OPENRAVE_BININGS_PYARRAY
 
-}
+} // namespace openravepy
 
-#endif
+#endif // OPENRAVE_BOOST_PYTHON_BINDINGS
