@@ -1,5 +1,9 @@
+cmake_minimum_required(VERSION 2.9)
+set(CMAKE_CXX_STANDARD 11)
+
 # http://www.cmake.org/cmake/help/cmake-2.6.html#policy:CMP0005
 cmake_policy(SET CMP0005 NEW)
+include(CheckTypeSize)
 add_definitions(-DPACKAGE=\"crlibm\")
 add_definitions(-DVERSION=\"1.0beta4\")
 
@@ -76,7 +80,7 @@ if( HAS_FPU_CONTROL_H AND HAVE_LONG_DOUBLE AND LONG_DOUBLE EQUAL 16 )
     ${source_dir}/scs_lib/addition_scs.c
     ${source_dir}/scs_lib/double2scs.c
     ${source_dir}/scs_lib/print_scs.c
-    ${source_dir}/scs_lib/scs2mpfr.c
+    # ${source_dir}/scs_lib/scs2mpfr.c
     ${source_dir}/scs_lib/zero_scs.c
     ${source_dir}/scs_lib/division_scs.c
     ${source_dir}/scs_lib/multiplication_scs.c
@@ -105,7 +109,7 @@ else()
     ${source_dir}/scs_lib/addition_scs.c
     ${source_dir}/scs_lib/double2scs.c
     ${source_dir}/scs_lib/print_scs.c
-    ${source_dir}/scs_lib/scs2mpfr.c
+    # ${source_dir}/scs_lib/scs2mpfr.c
     ${source_dir}/scs_lib/zero_scs.c
     ${source_dir}/scs_lib/division_scs.c
     ${source_dir}/scs_lib/multiplication_scs.c
@@ -127,3 +131,6 @@ add_library(crlibm-native STATIC ${crlibm_SOURCES})
 if(CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX OR COMPILER_IS_CLANG )
   set_target_properties(crlibm-native PROPERTIES COMPILE_FLAGS "${EXTRA_COMPILE_FLAGS} ${NATIVE_COMPILE_FLAGS}")
 endif()
+
+install(TARGETS crlibm crlibm-native DESTINATION lib)
+

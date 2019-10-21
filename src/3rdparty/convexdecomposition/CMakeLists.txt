@@ -1,3 +1,6 @@
+cmake_minimum_required(VERSION 2.9)
+set(CMAKE_CXX_STANDARD 11)
+
 if( UNIX )
   add_definitions("-DLINUX")
 endif()
@@ -15,3 +18,5 @@ add_library(convexdecomposition STATIC
   NvFloatMath.h            NvRayCast.h               NvSplitMesh.h         NvUserMemAlloc.h
   NvFloatMath.inl )
 set_target_properties(convexdecomposition PROPERTIES COMPILE_FLAGS "${EXTRA_COMPILE_FLAGS}")
+
+install(TARGETS convexdecomposition DESTINATION lib)

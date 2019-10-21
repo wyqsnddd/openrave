@@ -501,6 +501,8 @@ ENDIF(PCRE_SHOW_REPORT)
 
 # end CMakeLists.txt
 
+install(TARGETS pcrecpp_local DESTINATION lib)
+
 # set external flags
 set(libpcrecpp_INCLUDE_DIRS ${CMAKE_CURRENT_SOURCE_DIR} PARENT_SCOPE)
 set(libpcrecpp_LIBRARY_DIRS PARENT_SCOPE)

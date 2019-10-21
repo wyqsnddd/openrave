@@ -46,22 +46,22 @@ set(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/lib)
 set(TEST_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/test)
 
 
-if (NOT DEFINED BUILD_C_BINDINGS)
-    set(BUILD_C_BINDINGS true)
-endif()
+# if (NOT DEFINED BUILD_C_BINDINGS)
+#     set(BUILD_C_BINDINGS true)
+# endif()
 
-if (NOT DEFINED BUILD_PYTHON_BINDINGS)
-    set(BUILD_PYTHON_BINDINGS true)
-endif()
+# if (NOT DEFINED BUILD_PYTHON_BINDINGS)
+#     set(BUILD_PYTHON_BINDINGS true)
+# endif()
 
-if (NOT DEFINED BUILD_MATLAB_BINDINGS)
-    set(BUILD_MATLAB_BINDINGS true)
-endif()
+# if (NOT DEFINED BUILD_MATLAB_BINDINGS)
+#     set(BUILD_MATLAB_BINDINGS true)
+# endif()
 
-if (NOT BUILD_C_BINDINGS)
+# if (NOT BUILD_C_BINDINGS)
     set(BUILD_PYTHON_BINDINGS false)
     set(BUILD_MATLAB_BINDINGS false)
-endif()
+# endif()
 
 message("Building C bindings: ${BUILD_C_BINDINGS}")
 message("Building python bindings: ${BUILD_PYTHON_BINDINGS}")

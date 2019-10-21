@@ -26,6 +26,7 @@ set_target_properties(flann_cpp PROPERTIES
    VERSION ${FLANN_VERSION}
    SOVERSION ${FLANN_SOVERSION}
 ) 
+install(TARGETS flann_cpp DESTINATION lib)
 
 if (BUILD_C_BINDINGS)
     add_library(flann_s STATIC ${C_SOURCES})
@@ -43,8 +44,9 @@ if (BUILD_C_BINDINGS)
        VERSION ${FLANN_VERSION}
        SOVERSION ${FLANN_SOVERSION}
     ) 
-endif()
 
+    install(TARGETS flann_s flann DESTINATION lib)
+endif()
 
 #if(WIN32)
 #if (BUILD_C_BINDINGS)

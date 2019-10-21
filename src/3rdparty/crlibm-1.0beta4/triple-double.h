@@ -33,7 +33,7 @@
 #define  Renormalize3(resh, resm, resl, ah, am, al)     DoRenormalize3(resh, resm, resl, ah, am, al)  
 /*extern void Renormalize3(double* resh, double* resm, double* resl, double ah, double am, double al) ;*/
 
-#if TRIPLEDOUBLE_AS_FUNCTIONS
+#ifdef TRIPLEDOUBLE_AS_FUNCTIONS
 extern void Mul23(double* resh, double* resm, double* resl, double ah, double al, double bh, double bl);
 extern void Mul233(double* resh, double* resm, double* resl, double ah, double al, double bh, double bm, double bl);
 extern void Mul33(double* resh, double* resm, double* resl, double ah, double am, double al, double bh, double bm, double bl);

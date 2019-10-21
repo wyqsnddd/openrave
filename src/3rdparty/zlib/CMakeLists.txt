@@ -1,3 +1,8 @@
+cmake_minimum_required(VERSION 2.9)
+set(CMAKE_CXX_STANDARD 11)
+include(CheckFunctionExists)
+include(CheckIncludeFile)
+include(CheckTypeSize)
 check_include_file(sys/types.h HAVE_SYS_TYPES_H)
 check_include_file(stdint.h    HAVE_STDINT_H)
 check_include_file(stddef.h    HAVE_STDDEF_H)
@@ -162,7 +167,10 @@ endif()
 #    set_target_properties(minigzip64 PROPERTIES COMPILE_FLAGS "-D_FILE_OFFSET_BITS=64")
 #endif()
 
+install(TARGETS zlib DESTINATION lib)
+
 # set external flags
 set(ZLIB_FOUND 1 PARENT_SCOPE)
 set(ZLIB_LIBRARIES zlib PARENT_SCOPE)
 set(ZLIB_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR} PARENT_SCOPE)
+

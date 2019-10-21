@@ -1,3 +1,5 @@
+cmake_minimum_required(VERSION 2.6)
+
 include_directories(${ZLIB_INCLUDE_DIR})
 set(minizip_files crypt.h  ioapi.c  ioapi.h  mztools.c  mztools.h  unzip.c  unzip.h  zip.c  zip.h)
 if( MSVC )
@@ -6,3 +8,5 @@ endif()
 add_library(minizip STATIC ${minizip_files})
 set_target_properties(minizip PROPERTIES COMPILE_FLAGS "${EXTRA_COMPILE_FLAGS}")
 target_link_libraries(minizip ${ZLIB_LIBRARIES})
+
+install(TARGETS minizip DESTINATION lib)

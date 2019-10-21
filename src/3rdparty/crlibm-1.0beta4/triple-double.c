@@ -9,7 +9,7 @@
 #include "crlibm_private.h"
 
 
-#if TRIPLEDOUBLE_AS_FUNCTIONS
+#ifdef TRIPLEDOUBLE_AS_FUNCTIONS
 
 #if 0
 void Renormalize3(double* resh, double* resm, double* resl, double ah, double am, double al)

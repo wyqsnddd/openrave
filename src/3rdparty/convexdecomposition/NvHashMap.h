@@ -1362,6 +1362,7 @@ namespace CONVEX_DECOMPOSITION
 		a -= b; a -= c; a ^= (c>>3);
 		b -= c; b -= a; b ^= (a<<10);
 		c -= a; c -= b; c ^= (b>>15);
+		return 0;
 	}
 
 	NX_INLINE NxU32 hash(const NxU32 *k, NxU32 length)
