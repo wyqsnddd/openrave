@@ -26,7 +26,8 @@
 #include <boost/format.hpp>
 
 // export symbol prefix for plugin functions
-#define OPENRAVE_PLUGIN_API extern "C" OPENRAVE_HELPER_DLL_EXPORT
+#define OPENRAVE_PLUGIN_API 
+// extern "C" OPENRAVE_HELPER_DLL_EXPORT
 
 /// \deprecated
 #define RAVE_PLUGIN_API OPENRAVE_PLUGIN_API

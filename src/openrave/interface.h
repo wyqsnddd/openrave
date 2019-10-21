@@ -22,7 +22,7 @@
 #ifndef OPENRAVE_INTERFACE_BASE
 #define OPENRAVE_INTERFACE_BASE
 
-#if OPENRAVE_RAPIDJSON
+#ifdef OPENRAVE_RAPIDJSON
 #include <rapidjson/document.h>
 #endif // OPENRAVE_RAPIDJSON
 
@@ -132,7 +132,7 @@ public:
     /// \brief return true if the command is supported
     virtual bool SupportsCommand(const std::string& cmd);
 
-#if OPENRAVE_RAPIDJSON
+#ifdef OPENRAVE_RAPIDJSON
 
     /// \brief return true if the command is supported
     virtual bool SupportsJSONCommand(const std::string& cmd);
@@ -167,7 +167,7 @@ public:
         return bSuccess;
     }
 
-#if OPENRAVE_RAPIDJSON
+#ifdef OPENRAVE_RAPIDJSON
     /** \brief Used to send special JSON commands to the interface and receive output.
 
         The command must be registered by \ref RegisterJSONCommand. A special command '\b help' is
@@ -236,7 +236,7 @@ public:
     /// \brief Unregisters the command. <b>[multi-thread safe]</b>
     virtual void UnregisterCommand(const std::string& cmdname);
 
-#if OPENRAVE_RAPIDJSON
+#ifdef OPENRAVE_RAPIDJSON
 
     /// \brief The function to be executed for every JSON command.
     ///
@@ -280,7 +280,7 @@ private:
     /// Write the help commands to an output stream
     virtual bool _GetCommandHelp(std::ostream& sout, std::istream& sinput) const;
 
-#if OPENRAVE_RAPIDJSON
+#ifdef OPENRAVE_RAPIDJSON
     /// Write the help commands to an output stream
     virtual void _GetJSONCommandHelp(const rapidjson::Value& input, rapidjson::Value& output, rapidjson::Document::AllocatorType& allocator) const;
 #endif // OPENRAVE_RAPIDJSON
@@ -301,7 +301,7 @@ private:
     typedef std::map<std::string, boost::shared_ptr<InterfaceCommand>, CaseInsensitiveCompare> CMDMAP;
     CMDMAP __mapCommands; ///< all registered commands
 
-#if OPENRAVE_RAPIDJSON
+#ifdef OPENRAVE_RAPIDJSON
     typedef std::map<std::string, boost::shared_ptr<InterfaceJSONCommand>, CaseInsensitiveCompare> JSONCMDMAP;
     JSONCMDMAP __mapJSONCommands; ///< all registered commands
 #endif

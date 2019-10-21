@@ -151,7 +151,11 @@ public:
             _confirmLibrary();
             if(( pfnCreateNew == NULL) &&( pfnCreate == NULL) ) {
                 if( pfnCreateNew == NULL ) {
+#ifdef __APPLE_CC__         
+                    pfnCreateNew = (PluginExportFn_OpenRAVECreateInterface)_SysLoadSym(plibrary, "_Z23OpenRAVECreateInterfaceN8OpenRAVE13InterfaceTypeERKNSt3__112basic_stringIcNS1_11char_traitsIcEENS1_9allocatorIcEEEEPKcSB_N5boost10shared_ptrINS_15EnvironmentBaseEEE");
+#else
                     pfnCreateNew = (PluginExportFn_OpenRAVECreateInterface)_SysLoadSym(plibrary, "OpenRAVECreateInterface");
+#endif // __APPLE_CC__
                 }
 
                 if( pfnCreateNew == NULL ) {
@@ -176,14 +180,18 @@ public:
             _confirmLibrary();
             if(( pfnGetPluginAttributesNew == NULL) ||( pfnGetPluginAttributes == NULL) ) {
                 if( pfnGetPluginAttributesNew == NULL ) {
+#ifdef __APPLE_CC__
+                    pfnGetPluginAttributesNew = (PluginExportFn_OpenRAVEGetPluginAttributes)_SysLoadSym(plibrary, "_Z27OpenRAVEGetPluginAttributesPN8OpenRAVE10PLUGININFOEiPKc");
+#else
                     pfnGetPluginAttributesNew = (PluginExportFn_OpenRAVEGetPluginAttributes)_SysLoadSym(plibrary,"OpenRAVEGetPluginAttributes");
+#endif // __APPLE_CC__
                 }
                 if( pfnGetPluginAttributesNew == NULL ) {
 #ifdef _MSC_VER
                     pfnGetPluginAttributes = (PluginExportFn_GetPluginAttributes)_SysLoadSym(plibrary, "?GetPluginAttributes@@YA_NPAUPLUGININFO@OpenRAVE@@H@Z");
 #else
                     pfnGetPluginAttributes = (PluginExportFn_GetPluginAttributes)_SysLoadSym(plibrary, "_Z19GetPluginAttributesPN8OpenRAVE10PLUGININFOEi");
-#endif
+#endif // _MSC_VER
                     if( !pfnGetPluginAttributes ) {
                         pfnGetPluginAttributes = (PluginExportFn_GetPluginAttributes)_SysLoadSym(plibrary, "GetPluginAttributes");
                         if( !pfnGetPluginAttributes ) {
@@ -437,7 +445,7 @@ protected:
 #else
         const char* delim = ":";
 #endif
-        char* pOPENRAVE_PLUGINS = getenv("OPENRAVE_PLUGINS"); // getenv not thread-safe?
+        const char* pOPENRAVE_PLUGINS = OPENRAVE_PLUGINS_INSTALL_DIR;
         if( pOPENRAVE_PLUGINS != NULL ) {
             utils::TokenizeString(pOPENRAVE_PLUGINS, delim, vplugindirs);
         }
@@ -551,6 +559,8 @@ protected:
             }
         }
 
+        // RAVELOG_WARN("name = %s", name.c_str());
+
         if( !pointer ) {
             size_t nInterfaceNameLength = name.find_first_of(' ');
             if( nInterfaceNameLength == string::npos ) {
@@ -572,10 +582,12 @@ protected:
             FOREACH(it, listRegisteredInterfaces) {
                 RegisteredInterfacePtr registration = it->lock();
                 if( !!registration ) {
+                    // RAVELOG_WARN("registration->_name = %s, name = %s\n",  registration->_name.c_str(), name.c_str());
                     if(( nInterfaceNameLength >= registration->_name.size()) &&( _strnicmp(name.c_str(),registration->_name.c_str(),registration->_name.size()) == 0) ) {
                         std::stringstream sinput(name);
                         std::string interfacename;
                         sinput >> interfacename;
+                        // RAVELOG_WARN("%s", interfacename.c_str());
                         std::transform(interfacename.begin(), interfacename.end(), interfacename.begin(), ::tolower);
                         pointer = registration->_createfn(penv,sinput);
                         if( !!pointer ) {
@@ -1010,8 +1022,9 @@ protected:
         }
 #else
         dlerror();     // clear error
-        void* plib = dlopen(lib.c_str(), bLazy ? RTLD_LAZY : RTLD_NOW);
+        void* plib = dlopen(lib.c_str(), bLazy ? (RTLD_LOCAL|RTLD_LAZY) : RTLD_NOW);
         char* pstr = dlerror();
+        // RAVELOG_WARN("pstr = %s, plib = %d\n", pstr, plib);
         if( pstr != NULL ) {
             RAVELOG_WARN("%s: %s\n",lib.c_str(),pstr);
             if( plib != NULL ) {
@@ -1025,6 +1038,7 @@ protected:
 
     static void* _SysLoadSym(void* lib, const std::string& sym)
     {
+        // RAVELOG_WARN("sym = %s\n", sym.c_str());
 #ifdef _WIN32
         return GetProcAddress((HINSTANCE)lib, sym.c_str());
 #else

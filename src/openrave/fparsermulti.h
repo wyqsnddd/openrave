@@ -19,8 +19,8 @@
 
 #include <fparser/fpconfig.hh>
 #include <fparser/fparser.hh>
-#include <fparser/fptypes.hh>
-#include <fparser/fpaux.hh>
+#include <fparser/extrasrc/fptypes.hh>
+#include <fparser/extrasrc/fpaux.hh>
 #include <sstream>
 #include <cstdio>
 #include <utility>

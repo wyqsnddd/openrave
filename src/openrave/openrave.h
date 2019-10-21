@@ -43,10 +43,10 @@
 
 #ifndef __PRETTY_FUNCTION__
 #define __PRETTY_FUNCTION__ __FUNCDNAME__
-#endif
+#endif // __PRETTY_FUNCTION__
 
 #else
-#endif
+#endif // _MSC_VER
 
 #include <string>
 #include <vector>
@@ -79,13 +79,13 @@
 #include <boost/multi_array.hpp>
 //#include <boost/cstdint.hpp>
 
-#endif
+#endif // Q_MOC_RUN
 
-#if defined(__GNUC__)
+#ifdef __GNUC__
 #define RAVE_DEPRECATED __attribute__((deprecated))
 #else
 #define RAVE_DEPRECATED
-#endif
+#endif // defined(__GNUC__)
 
 /// The entire %OpenRAVE library
 namespace OpenRAVE {
@@ -93,9 +93,9 @@ namespace OpenRAVE {
 #include <openrave/config.h>
 #include <openrave/interfacehashes.h>
 
-}
+} // namespace OpenRAVE
 
-#if OPENRAVE_RAPIDJSON
+#ifdef OPENRAVE_RAPIDJSON
 #include <rapidjson/document.h>
 #endif
 
@@ -103,7 +103,7 @@ namespace OpenRAVE {
 
 namespace OpenRAVE {
 
-#if OPENRAVE_PRECISION // 1 if double precision
+#ifdef OPENRAVE_PRECISION // 1 if double precision
 typedef double dReal;
 #define g_fEpsilon 1e-15
 #else
@@ -508,10 +508,10 @@ public:
     virtual BaseXMLWriterPtr AddChild(const std::string& xmltag, const AttributesList& atts=AttributesList()) = 0;
 };
 
-} // end namespace OpenRAVE
+} // namespace OpenRAVE
 
 // define the math functions
-#if OPENRAVE_PRECISION // 1 if double precision
+#ifdef OPENRAVE_PRECISION // 1 if double precision
 #define OPENRAVE_MATH_EXP_DOUBLE RaveExp
 #define OPENRAVE_MATH_LOG_DOUBLE RaveLog
 #define OPENRAVE_MATH_COS_DOUBLE RaveCos
@@ -2746,9 +2746,9 @@ const std::string& IkParameterization::GetName() const
 
 } // end namespace OpenRAVE
 
-#if OPENRAVE_RAPIDJSON
+#ifdef OPENRAVE_RAPIDJSON
 #include <openrave/json.h>
-#endif
+#endif // OPENRAVE_RAPIDJSON
 
 BOOST_STATIC_ASSERT(OPENRAVE_VERSION_MAJOR>=0&&OPENRAVE_VERSION_MAJOR<=255);
 BOOST_STATIC_ASSERT(OPENRAVE_VERSION_MINOR>=0&&OPENRAVE_VERSION_MINOR<=255);
@@ -2816,7 +2816,6 @@ BOOST_TYPEOF_REGISTER_TYPE(OpenRAVE::RAY)
 BOOST_TYPEOF_REGISTER_TYPE(OpenRAVE::AABB)
 BOOST_TYPEOF_REGISTER_TYPE(OpenRAVE::OBB)
 BOOST_TYPEOF_REGISTER_TYPE(OpenRAVE::TRIANGLE)
-#endif
+#endif // RAVE_REGISTER_BOOST
 
-
-#endif
+#endif // OPENRAVE_H

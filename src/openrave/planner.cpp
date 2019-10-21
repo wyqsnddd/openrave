@@ -18,7 +18,9 @@
 
 #include <openrave/planningutils.h>
 
+#ifdef OPENRAVE_RAPIDJSON
 #include <openrave/openravejson.h>
+#endif // OPENRAVE_RAPIDJSON
 
 namespace OpenRAVE {
 
@@ -161,6 +163,7 @@ PlannerStatus& PlannerStatus::SetPlannerParameters(PlannerParametersConstPtr par
     return *this;
 }
 
+#ifdef OPENRAVE_RAPIDJSON
 void PlannerStatus::SaveToJson(rapidjson::Value& rPlannerStatus, rapidjson::Document::AllocatorType& alloc) const
 {
     rPlannerStatus.SetObject();
@@ -203,6 +206,7 @@ void PlannerStatus::SaveToJson(rapidjson::Value& rPlannerStatus, rapidjson::Docu
         openravejson::SetJsonValueByKey(rPlannerStatus, "ikparam", ss.str(), alloc);
     }
 }
+#endif // OPENRAVE_RAPIDJSON
 
 PlannerParameters::StateSaver::StateSaver(PlannerParametersPtr params) : _params(params)
 {
