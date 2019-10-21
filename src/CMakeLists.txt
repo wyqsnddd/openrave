@@ -68,7 +68,8 @@ if(APPLE)
 	set(BOOST_VERSION "1.70.0")
 	set(BOOST_LIBRARYDIR "${BOOST_ROOT}/${BOOST_VERSION}/lib")
 	set(BOOST_INCLUDEDIR "${BOOST_ROOT}/${BOOST_VERSION}/include")
-	find_package(Boost REQUIRED COMPONENTS regex filesystem system thread iostreams date_time) #python
+	find_package(Boost REQUIRED COMPONENTS regex filesystem system thread iostreams date_time)
+	# find_package(Boost COMPONENTS python REQUIRED)
 	include_directories(${BOOST_INCLUDEDIR})
 	link_directories(${BOOST_LIBRARYDIR})
 else()	
@@ -127,22 +128,16 @@ add_subdirectory(openrave)
 add_subdirectory(3rdparty/collada) # collada depends on openrave
 add_subdirectory(openrave-core)
 
-configure_file(${CMAKE_CURRENT_SOURCE_DIR}/cmake/openrave-config.cmake.in ${CMAKE_CURRENT_BINARY_DIR}/openrave-config.cmake IMMEDIATE @ONLY)
-configure_file(${CMAKE_CURRENT_SOURCE_DIR}/cmake/openrave-config-version.cmake.in ${CMAKE_CURRENT_BINARY_DIR}/openrave-config-version.cmake IMMEDIATE @ONLY)
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/openrave-config.cmake ${CMAKE_CURRENT_BINARY_DIR}/openrave-config-version.cmake 
-	DESTINATION lib/cmake/${OPENRAVE_CMAKE_INSTALL_DIR} COMPONENT ${COMPONENT_PREFIX}dev
-)
+# ========== DEPENDENCIES ==========
+if(WIN32 AND NOT CYGWIN)
+    set(DEF_INSTALL_CMAKE_DIR CMake)
+    set(DEF_INSTALL_CMAKE_DIR_REL ..)
+else()
+    set(DEF_INSTALL_CMAKE_DIR lib/cmake/openrave)
+    set(DEF_INSTALL_CMAKE_DIR_REL ../../..)
+endif()
 
-# # ========== DEPENDENCIES ==========
-# if(WIN32 AND NOT CYGWIN)
-#     set(DEF_INSTALL_CMAKE_DIR CMake)
-#     set(DEF_INSTALL_CMAKE_DIR_REL ..)
-# else()
-#     set(DEF_INSTALL_CMAKE_DIR lib/cmake/openrave)
-#     set(DEF_INSTALL_CMAKE_DIR_REL ../../..)
-# endif()
-
-# set(INSTALL_CMAKE_DIR ${DEF_INSTALL_CMAKE_DIR} CACHE PATH "Installation directory for OpenRAVE's CMake files" FORCE)
+set(INSTALL_CMAKE_DIR ${DEF_INSTALL_CMAKE_DIR} CACHE PATH "Installation directory for OpenRAVE's CMake files" FORCE)
 
 # set(PKGS ${PKGS} "GMP" "MPFR" "MPC" "SymEngine" "Eigen3")
 # if(NOT APPLE)
@@ -157,27 +152,37 @@ install(FILES ${CMAKE_CURRENT_BINARY_DIR}/openrave-config.cmake ${CMAKE_CURRENT_
 #     set(OPENRAVE_PKG_FINDS "${OPENRAVE_PKG_FINDS}\n")
 # endforeach()
 
-# # ========== FILL CONFIGURATION FILES ==========
-# set(CONF_INCLUDE_DIRS ${PROJECT_SOURCE_DIR} ${PROJECT_BINARY_DIR})
-# set(CONF_SHARE_DIRS   ${PROJECT_SOURCE_DIR} ${PROJECT_BINARY_DIR})
-# # for the build tree
-# # openrave-config.cmake in openrave/build
-# set(OPENRAVE_BUILD_TREE ON)
+# ========== FILL CONFIGURATION FILES ==========
+set(CONF_INCLUDE_DIRS ${PROJECT_SOURCE_DIR} ${PROJECT_BINARY_DIR})
+set(CONF_SHARE_DIRS   ${PROJECT_SOURCE_DIR} ${PROJECT_BINARY_DIR})
+# for the build tree
+# openrave-config.cmake in openrave/build
+set(OPENRAVE_BUILD_TREE ON)
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/cmake/openrave-config.cmake.in
+	${CMAKE_CURRENT_BINARY_DIR}/openrave-config.cmake IMMEDIATE @ONLY)
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/cmake/openrave-config-version.cmake.in
+	${CMAKE_CURRENT_BINARY_DIR}/openrave-config-version.cmake IMMEDIATE @ONLY)
+install(FILES 
+	${CMAKE_CURRENT_BINARY_DIR}/openrave-config.cmake
+	${CMAKE_CURRENT_BINARY_DIR}/openrave-config-version.cmake 
+	DESTINATION lib/cmake/${OPENRAVE_CMAKE_INSTALL_DIR} COMPONENT ${COMPONENT_PREFIX}dev
+)
 # configure_file(cmake/openrave-config.cmake.in "${PROJECT_BINARY_DIR}/openrave-config.cmake" @ONLY)
 
-# # for the install tree
-# # openrave-config.cmake, openrave-config-version.cmake in openrave/build/CMakeFiles
-# set(OPENRAVE_BUILD_TREE OFF)
-# configure_file(cmake/openrave-config.cmake.in 
-# 	           "${PROJECT_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/openrave-config.cmake" 
-# 	           @ONLY)
-# configure_file(cmake/openrave-config-version.cmake.in 
-# 	           openrave-config-version.cmake 
-# 	           @ONLY)
-
-# install(FILES "${PROJECT_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/openrave-config.cmake" 
-# 	    ${PROJECT_BINARY_DIR}/openrave-config-version.cmake
-#         DESTINATION ${INSTALL_CMAKE_DIR})
+# for the install tree
+# openrave-config.cmake, openrave-config-version.cmake in openrave/build/CMakeFiles
+set(OPENRAVE_BUILD_TREE OFF)
+configure_file(cmake/openrave-config.cmake.in 
+	           ${PROJECT_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/openrave-config.cmake
+	           @ONLY)
+configure_file(cmake/openrave-config-version.cmake.in 
+	           openrave-config-version.cmake 
+	           @ONLY)
+install(FILES 
+	${PROJECT_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/openrave-config.cmake
+	${PROJECT_BINARY_DIR}/openrave-config-version.cmake
+    DESTINATION ${INSTALL_CMAKE_DIR}
+)
 
 # # openrave-targets.cmake
 # install(EXPORT OpenRAVETargets DESTINATION lib/cmake/openrave)
@@ -186,6 +191,7 @@ install(FILES ${CMAKE_CURRENT_BINARY_DIR}/openrave-config.cmake ${CMAKE_CURRENT_
 # endif()
 
 add_subdirectory(plugins)
+add_subdirectory(bindings)
 
 # ========== MY PHONY COMMANDS ==========
 add_custom_target(distclean
