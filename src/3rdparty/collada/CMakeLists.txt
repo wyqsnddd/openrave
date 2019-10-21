@@ -47,7 +47,7 @@ if( ZLIB_FOUND AND Boost_FILESYSTEM_FOUND AND Boost_SYSTEM_FOUND )
 	  add_dependencies(collada15reader pcre_local)
 	endif()
 
-	add_dependencies(collada15reader openrave)
+	# add_dependencies(collada15reader openrave)
 	target_link_libraries(collada15reader xml2 pcrecpp ${COLLADA_LIBS})
 	set_target_properties(collada15reader PROPERTIES COMPILE_FLAGS "${libpcrecpp_CFLAGS_OTHERS} ${EXTRA_COMPILE_FLAGS} -DDOM_INCLUDE_LIBXML -DCOLLADA_DOM_DAEFLOAT_IS64 -DCOLLADA_DOM_SUPPORT150 ${Boost_CFLAGS}"
 	  LINK_FLAGS "${libpcrecpp_LDFLAGS_OTHERS}")

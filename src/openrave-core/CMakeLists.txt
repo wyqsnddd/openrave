@@ -1,7 +1,12 @@
+cmake_minimum_required(VERSION 2.9)
+set(CMAKE_CXX_STANDARD 11)
+find_package(libxml2 REQUIRED)
+
 check_function_exists(mkstemp HAVE_MKSTEMP)
 if( HAVE_MKSTEMP )
   add_definitions("-DHAVE_MKSTEMP")
 endif()
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/..)
 
 set(OPENRAVE_CORE_LIBRARIES ${openrave_libraries})
 set(openrave_core_SOURCES openrave-core.cpp environment-core.h openrave-core.h ravep.h xmlreaders-core.cpp genericcollisionchecker.cpp genericphysicsengine.cpp genericrobot.cpp multicontroller.cpp generictrajectory.cpp)
@@ -61,7 +66,7 @@ endif()
 
 link_directories(${OPENRAVE_LINK_DIRS})
 
-add_library(libopenrave-core SHARED ${openrave_core_SOURCES})
+add_library(openrave_core SHARED ${openrave_core_SOURCES})
 
 if( COLLADA_DOM_FOUND )
   set(OPENRAVE_CORE_LIBRARIES ${OPENRAVE_CORE_LIBRARIES} ${COLLADA_DOM_LIBRARIES})
@@ -70,61 +75,64 @@ if( IVCON_FOUND )
   set(OPENRAVE_CORE_LIBRARIES ${OPENRAVE_CORE_LIBRARIES} ${IVCON_LIBRARY})
 endif()
 
-set_target_properties(libopenrave-core PROPERTIES OUTPUT_NAME openrave${OPENRAVE_LIBRARY_SUFFIX}-core
-                                  SOVERSION 0 # always have it 0 since we're including the soversion as part of the library name
-                                  VERSION ${OPENRAVE_VERSION}
-                                  CLEAN_DIRECT_OUTPUT 1
-                                  COMPILE_FLAGS "${LIBOPENRAVE_COMPILE_FLAGS} -DOPENRAVE_CORE_DLL_EXPORTS -DOPENRAVE_CORE_DLL"
-                                  LINK_FLAGS "${LIBOPENRAVE_LINK_FLAGS}")
+set_target_properties(openrave_core 
+  PROPERTIES VERSION ${OPENRAVE_VERSION}
+             CLEAN_DIRECT_OUTPUT 1
+             COMPILE_FLAGS "${CMAKE_CXX_FLAGS_DEBUG} ${LIBOPENRAVE_COMPILE_FLAGS} -DOPENRAVE_CORE_DLL_EXPORTS -DOPENRAVE_CORE_DLL"
+             LINK_FLAGS "${LIBOPENRAVE_LINK_FLAGS}"
+             INSTALL_RPATH_USE_LINK_PATH TRUE CLEAN_DIRECT_OUTPUT 1
+)
 
-target_link_libraries(libopenrave-core libopenrave ${OPENRAVE_CORE_LIBRARIES})
-target_link_libraries(libopenrave-core PRIVATE boost_assertion_failed)
+target_link_libraries(openrave_core PUBLIC openrave ${OPENRAVE_CORE_LIBRARIES})# PRIVATE boost_assertion_failed)
 if( MSVC )
-  install(TARGETS libopenrave-core RUNTIME DESTINATION bin COMPONENT ${COMPONENT_PREFIX}base LIBRARY DESTINATION bin COMPONENT ${COMPONENT_PREFIX}base ARCHIVE DESTINATION lib${LIB_SUFFIX} COMPONENT ${COMPONENT_PREFIX}base)
+  install(TARGETS openrave_core RUNTIME DESTINATION bin COMPONENT ${COMPONENT_PREFIX}base LIBRARY DESTINATION bin COMPONENT ${COMPONENT_PREFIX}base ARCHIVE DESTINATION lib${LIB_SUFFIX} COMPONENT ${COMPONENT_PREFIX}base)
 else()
-  install(TARGETS libopenrave-core DESTINATION lib${LIB_SUFFIX} COMPONENT ${COMPONENT_PREFIX}base)
+  install(TARGETS openrave_core DESTINATION lib${LIB_SUFFIX} COMPONENT ${COMPONENT_PREFIX}base)
 endif()
-install(FILES openrave-core.h DESTINATION include/${OPENRAVE_INCLUDE_INSTALL_DIR} COMPONENT ${COMPONENT_PREFIX}dev)
+install(FILES openrave-core.h DESTINATION include COMPONENT ${COMPONENT_PREFIX}dev)
 
 if( OPT_CBINDINGS )
-  add_library(libopenrave-core_c SHARED openrave-core_c.cpp)
-  add_dependencies(libopenrave-core_c libopenrave-core)
+  add_library(openrave_core_c SHARED openrave-core_c.cpp)
+  add_dependencies(openrave_core_c openrave_core)
   # remove "${LIBOPENRAVE_LINK_FLAGS} until can figure out symbol visibility issue
-  set_target_properties(libopenrave-core_c PROPERTIES OUTPUT_NAME openrave${OPENRAVE_LIBRARY_SUFFIX}-core_c 
+  set_target_properties(openrave_core_c PROPERTIES OUTPUT_NAME openrave-core_c 
    SOVERSION 0 # always have it 0 since we're including the soversion as part of the library name
     VERSION ${OPENRAVE_VERSION}
     CLEAN_DIRECT_OUTPUT 1
     COMPILE_FLAGS "${LIBOPENRAVE_COMPILE_FLAGS} -DOPENRAVE_C_CORE_DLL_EXPORTS -DOPENRAVE_C_CORE_DLL -DOPENRAVE_CORE_DLL"
-    LINK_FLAGS "${LIBOPENRAVE_LINK_FLAGS}")
-  target_link_libraries (libopenrave-core_c libopenrave-core ${OPENRAVE_CORE_LIBRARIES})
-  target_link_libraries (libopenrave-core_c PRIVATE boost_assertion_failed)
+    LINK_FLAGS "${LIBOPENRAVE_LINK_FLAGS}"
+)
+  target_link_libraries (openrave_core_c openrave_core ${OPENRAVE_CORE_LIBRARIES})
+  # target_link_libraries (openrave_core_c PRIVATE boost_assertion_failed)
   if( MSVC )
-    install(TARGETS libopenrave-core_c RUNTIME DESTINATION bin COMPONENT ${COMPONENT_PREFIX}base LIBRARY DESTINATION bin COMPONENT ${COMPONENT_PREFIX}base ARCHIVE DESTINATION lib${LIB_SUFFIX} COMPONENT ${COMPONENT_PREFIX}cbindings-base)
+    install(TARGETS openrave_core_c RUNTIME DESTINATION bin COMPONENT ${COMPONENT_PREFIX}base LIBRARY DESTINATION bin COMPONENT ${COMPONENT_PREFIX}base ARCHIVE DESTINATION lib${LIB_SUFFIX} COMPONENT ${COMPONENT_PREFIX}cbindings-base)
   else()
-    install(TARGETS libopenrave-core_c DESTINATION lib${LIB_SUFFIX} COMPONENT ${COMPONENT_PREFIX}cbindings-base)
+    install(TARGETS openrave_core_c DESTINATION lib${LIB_SUFFIX} COMPONENT ${COMPONENT_PREFIX}cbindings-base)
   endif()
   install(FILES openrave-core_c.h DESTINATION include/${OPENRAVE_INCLUDE_INSTALL_DIR} COMPONENT ${COMPONENT_PREFIX}cbindings-dev)
 endif()
 
 if( OPT_STATIC )
   # visual studio needs static built
-  add_library(libopenrave-core_static STATIC ${openrave_core_SOURCES})
+  add_library(openrave_core_static STATIC ${openrave_core_SOURCES})
 
   if( MSVC )
     # static version needs to have different name
-    set(LIBOPENRAVE_CORE_NAME libopenrave${OPENRAVE_LIBRARY_SUFFIX}-core)
+    set(LIBOPENRAVE_CORE_NAME libopenrave_core)
   else()
-    set(LIBOPENRAVE_CORE_NAME openrave${OPENRAVE_LIBRARY_SUFFIX}-core)
+    set(LIBOPENRAVE_CORE_NAME openrave_core)
   endif()
 
-  set_target_properties(libopenrave-core_static PROPERTIES OUTPUT_NAME ${LIBOPENRAVE_CORE_NAME}
-                                                SOVERSION 0 # always have it 0 since we're including the soversion as part of the library name
-                                                VERSION ${OPENRAVE_VERSION}
-                                                CLEAN_DIRECT_OUTPUT 1
-                                                COMPILE_FLAGS "${LIBOPENRAVE_COMPILE_FLAGS} "
-                                                LINK_FLAGS "${LIBOPENRAVE_LINK_FLAGS}")
+  set_target_properties(openrave_core_static PROPERTIES 
+    OUTPUT_NAME ${LIBOPENRAVE_CORE_NAME}
+    SOVERSION 0 # always have it 0 since we're including the soversion as part of the library name
+    VERSION ${OPENRAVE_VERSION}
+    CLEAN_DIRECT_OUTPUT 1
+    COMPILE_FLAGS "${LIBOPENRAVE_COMPILE_FLAGS} "
+    LINK_FLAGS "${LIBOPENRAVE_LINK_FLAGS}"
+)
   
-  target_link_libraries(libopenrave-core_static libopenrave_static ${OPENRAVE_CORE_LIBRARIES})
-  target_link_libraries(libopenrave-core_static PRIVATE boost_assertion_failed)
-  install(TARGETS libopenrave-core_static DESTINATION lib${LIB_SUFFIX} COMPONENT ${COMPONENT_PREFIX}dev)
+  target_link_libraries(openrave_core_static libopenrave_static ${OPENRAVE_CORE_LIBRARIES})
+  # target_link_libraries(openrave_core_static PRIVATE boost_assertion_failed)
+  install(TARGETS openrave_core_static DESTINATION lib${LIB_SUFFIX} COMPONENT ${COMPONENT_PREFIX}dev)
 endif()

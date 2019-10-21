@@ -14,3 +14,9 @@ msvc_soqt/
 
 *.o
 *.a
+
+*.dylib
+openrave/src/build
+build
+
+.DS_Store

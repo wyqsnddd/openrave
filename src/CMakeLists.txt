@@ -124,7 +124,7 @@ configure_file(${CMAKE_CURRENT_SOURCE_DIR}/openrave/config.h.in
 
 add_subdirectory(3rdparty)
 add_subdirectory(openrave)
-add_subdirectory(3rdparty/collada-2.4.0) # collada depends on openrave
+add_subdirectory(3rdparty/collada) # collada depends on openrave
 add_subdirectory(openrave-core)
 
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/cmake/openrave-config.cmake.in ${CMAKE_CURRENT_BINARY_DIR}/openrave-config.cmake IMMEDIATE @ONLY)
@@ -185,12 +185,12 @@ install(FILES ${CMAKE_CURRENT_BINARY_DIR}/openrave-config.cmake ${CMAKE_CURRENT_
 # 	install(EXPORT OpenRAVEDebugTargets DESTINATION lib/cmake/openrave)
 # endif()
 
-# # ========== MY PHONY COMMANDS ==========
-# add_custom_target(distclean
-#     COMMAND make clean && 
-#     rm -rf ${MY_INSTALL_INCLUDE_DIR}/openrave ${MY_INSTALL_INCLUDE_DIR}/openrave*
-#     rm -rf ${MY_INSTALL_SHARE_DIR}/openrave ${MY_INSTALL_SHARE_DIR}/openrave*
-#     ${MY_INSTALL_LIBRARY_DIR}/libopenrave*
-#     ${MY_INSTALL_CMAKE_DIR}/openrave
-# )
+# ========== MY PHONY COMMANDS ==========
+add_custom_target(distclean
+    COMMAND make clean && 
+    rm -rf ${MY_INSTALL_INCLUDE_DIR}/openrave ${MY_INSTALL_INCLUDE_DIR}/openrave*
+    rm -rf ${MY_INSTALL_SHARE_DIR}/openrave ${MY_INSTALL_SHARE_DIR}/openrave*
+    ${MY_INSTALL_LIBRARY_DIR}/libopenrave*
+    ${MY_INSTALL_CMAKE_DIR}/openrave
+)
 
