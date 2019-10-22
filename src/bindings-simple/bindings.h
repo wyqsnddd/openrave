@@ -18,11 +18,11 @@
 #ifndef OPENRAVE_BOOST_PYTHON_BINDINGS
 #define OPENRAVE_BOOST_PYTHON_BINDINGS
 
-#include "../python3/lib/python3.7/site-packages/numpy/core/include/numpy/arrayobject.h"
-#include "../python3/lib/python3.7/site-packages/numpy/core/include/numpy/arrayscalars.h"
+#include <numpy/arrayobject.h>
+#include <numpy/arrayscalars.h>
 #include <Python.h>
-#include "include/boost/python.hpp"
-#include "include/boost/python/numpy.hpp"
+#include <boost/python.hpp>
+#include <boost/python/numpy.hpp>
 // #include <boost/array.hpp>
 // #include <boost/multi_array.hpp>
 // #include <boost/shared_ptr.hpp>
@@ -78,7 +78,7 @@
 // is_none is not supported by older versions of python
 #if BOOST_VERSION >= 104300
 #define IS_PYTHONOBJECT_NONE(o) (o).is_none()
-#else // 
+#else // BOOST_VERSION >= 104300
 #define IS_PYTHONOBJECT_NONE(o) (!!(o))
 #endif // BOOST_VERSION >= 104300
 

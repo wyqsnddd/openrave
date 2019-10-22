@@ -63,11 +63,12 @@ set(CMAKE_PREFIX_PATH "${MY_INSTALL_CMAKE_DIR}")
 # find_package(SymEngine 0.5.0 REQUIRED)
 # message(STATUS "SymEngine version: ${SymEngine_VERSION} :: ${SYMENGINE_INCLUDE_DIRS} :: ${SYMENGINE_LIBRARIES} :: ${SYMENGINE_DEFINITIONS}")
 if(APPLE)
-	# set(OpenRAVE_PYTHON_DIR "${MY_INSTALL_INCLUDE_DIR}/openrave/python")
+	set(OpenRAVE_PYTHON_DIR "${MY_INSTALL_INCLUDE_DIR}/openrave/python")
 	set(BOOST_ROOT    "/usr/local/Cellar/boost")
 	set(BOOST_VERSION "1.71.0")
 	set(BOOST_LIBRARYDIR "${BOOST_ROOT}/${BOOST_VERSION}/lib")
 	set(BOOST_INCLUDEDIR "${BOOST_ROOT}/${BOOST_VERSION}/include")
+	set(BOOST_PYTHON3_LIBRARYDIR "${BOOST_ROOT}-python3/1.71.0_1/lib")
 	find_package(Boost REQUIRED COMPONENTS regex filesystem system thread iostreams date_time)
 	find_package(Boost COMPONENTS python REQUIRED)
 	include_directories(${BOOST_INCLUDEDIR})
@@ -192,7 +193,7 @@ install(FILES
 # endif()
 
 add_subdirectory(plugins)
-add_subdirectory(bindings)
+add_subdirectory(bindings-simple)
 
 # ========== MY PHONY COMMANDS ==========
 add_custom_target(distclean
