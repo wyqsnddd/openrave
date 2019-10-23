@@ -97,7 +97,11 @@ public:
         if( values.size() > 0 ) {
             memcpy(PyArray_DATA(pypos), &values[0], values.size()*sizeof(values[0]));
         }
-        return static_cast<numeric::array>(handle<>(pypos));
+
+        np::dtype dt = sizeof(dReal)==8 ? np::dtype::get_builtin<double>() : np::dtype::get_builtin<float>();
+        boost::python::object o((boost::python::handle<>(pypos)));
+        return np::array(o, dt);
+        // return static_cast<numeric::array>(handle<>(pypos));
     }
 
     object SamplePoints2D(object otimes, PyConfigurationSpecificationPtr pyspec) const
@@ -112,7 +116,11 @@ public:
         if( values.size() > 0 ) {
             memcpy(PyArray_DATA(pypos), &values[0], values.size()*sizeof(values[0]));
         }
-        return static_cast<numeric::array>(handle<>(pypos));
+
+        np::dtype dt = sizeof(dReal)==8 ? np::dtype::get_builtin<double>() : np::dtype::get_builtin<float>();
+        boost::python::object o((boost::python::handle<>(pypos)));
+        return np::array(o, dt);
+        // return static_cast<numeric::array>(handle<>(pypos));
     }
 
     object GetConfigurationSpecification() const {
@@ -148,7 +156,10 @@ public:
         if( values.size() > 0 ) {
             memcpy(PyArray_DATA(pypos), &values[0], values.size()*sizeof(values[0]));
         }
-        return static_cast<numeric::array>(handle<>(pypos));
+
+        np::dtype dt = sizeof(dReal)==8 ? np::dtype::get_builtin<double>() : np::dtype::get_builtin<float>();
+        boost::python::object o((boost::python::handle<>(pypos)));
+        return np::array(o, dt);
     }
 
     object __getitem__(int index) const
@@ -180,7 +191,10 @@ public:
             _ptrajectory->GetWaypoint(vindices[i],values);
             memcpy(PyArray_BYTES(pypos)+(i*waypointSize), &values[0], waypointSize);
         }
-        return static_cast<numeric::array>(handle<>(pypos));
+
+        np::dtype dt = sizeof(dReal)==8 ? np::dtype::get_builtin<double>() : np::dtype::get_builtin<float>();
+        boost::python::object o((boost::python::handle<>(pypos)));
+        return np::array(o, dt);
     }
 
     object GetAllWaypoints2D() const
@@ -198,7 +212,10 @@ public:
         if( values.size() > 0 ) {
             memcpy(PyArray_DATA(pypos), &values[0], values.size()*sizeof(values[0]));
         }
-        return static_cast<numeric::array>(handle<>(pypos));
+
+        np::dtype dt = sizeof(dReal)==8 ? np::dtype::get_builtin<double>() : np::dtype::get_builtin<float>();
+        boost::python::object o((boost::python::handle<>(pypos)));
+        return np::array(o, dt);
     }
 
     object GetAllWaypoints2D(PyConfigurationSpecificationPtr pyspec) const

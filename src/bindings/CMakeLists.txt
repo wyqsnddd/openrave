@@ -68,9 +68,10 @@ if( Boost_PYTHON_FOUND AND Boost_THREAD_FOUND )
       add_library(openravepy_int SHARED openravepy_kinbody.cpp openravepy_int.cpp openravepy_robot.cpp openravepy_int.h openravepy_global.cpp openravepy_collisionchecker.cpp openravepy_controller.cpp openravepy_ikparameterization.cpp openravepy_iksolver.cpp openravepy_module.cpp openravepy_physicsengine.cpp openravepy_planner.cpp openravepy_planningutils.cpp openravepy_sensor.cpp openravepy_sensorsystem.cpp openravepy_spacesampler.cpp openravepy_trajectory.cpp openravepy_viewer.cpp bindings.cpp bindings.h docstrings.cpp docstrings.h)
       # stdc++ has to be included before opengl libraries due to some ATI bug (http://wiki.fifengine.de/Segfault_in_cxa_allocate_exception#Workaround)
       target_link_libraries(openravepy_int 
-        PUBLIC ${STDC_LIBRARY} libopenrave libopenrave-core 
-        ${Python3_LIBRARY} ${Boost_PYTHON_LIBRARY} ${Boost_THREAD_LIBRARY} ${extralibs}
-        ${Python3_NUMPY_LIBRARY}
+        PUBLIC ${STDC_LIBRARY} openrave openrave_core
+        boost_python37 boost_numpy37 dl util ${Python3_LIBRARY} ${CMAKE_THREAD_LIBS_INIT}
+        # ${Python3_LIBRARY} ${Boost_PYTHON_LIBRARY} ${Boost_THREAD_LIBRARY} ${extralibs}
+        # ${Python3_NUMPY_LIBRARY}
       ) # PRIVATE boost_assertion_failed)
       # add_dependencies(openravepy_int libopenrave libopenrave-core)
       set_target_properties(openravepy_int PROPERTIES PREFIX "" COMPILE_FLAGS "${OPENRAVEPY_COMPILE_FLAGS}")

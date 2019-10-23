@@ -19,6 +19,7 @@
 #include <openrave/utils.h>
 #include <boost/thread/once.hpp>
 #include <boost/scoped_ptr.hpp>
+#include <boost/multi_array.hpp>
 
 namespace openravepy
 {
@@ -119,7 +120,7 @@ void toRapidJSONValue(object &obj, rapidjson::Value &value, rapidjson::Document:
     {
         value.SetInt64(PyLong_AsLong(obj.ptr()));
     }
-    else if (PyString_Check(obj.ptr()))
+    else if (PyUnicode_Check(obj.ptr()))
     {
         value.SetString(PyString_AsString(obj.ptr()), PyString_GET_SIZE(obj.ptr()));
     }

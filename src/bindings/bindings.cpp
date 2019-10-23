@@ -13,6 +13,7 @@
 //
 // You should have received a copy of the GNU Lesser General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#include <boost/multi_array.hpp>
 #include "bindings.h"
 
 namespace mydetail {
@@ -182,12 +183,12 @@ struct stdstring_from_python_str
 
     static void* convertible(PyObject* obj)
     {
-        return (PyString_Check(obj) || PyUnicode_Check(obj)) ? obj : 0;
+        return (PyUnicode_Check(obj) || PyUnicode_Check(obj)) ? obj : 0;
     }
 
     static void construct(PyObject* obj, boost::python::converter::rvalue_from_python_stage1_data* data)
     {
-        if(PyString_Check(obj)) {
+        if(PyUnicode_Check(obj)) {
             const char* value = PyString_AsString(obj);
             //MY_CHECK(value,translate("Received null string pointer from Python"));
             void* storage = ((boost::python::converter::rvalue_from_python_storage<std::string>*)data)->storage.bytes;

@@ -156,7 +156,7 @@ struct select_npy_type<uint32_t>
 
 // https://py3c.readthedocs.io/en/latest/reference.html
 // https://docs.python.org/3/c-api/unicode.html#c.PyUnicode_AsUTF8
-const char* PyString_AsString(PyObject* pystring) 
+inline const char* PyString_AsString(PyObject* pystring) 
 {
     return PyUnicode_AsUTF8(pystring);
 }
