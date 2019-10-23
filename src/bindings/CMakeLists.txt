@@ -2,30 +2,29 @@ if(NOT OPENRAVE_DISABLE_ASSERT_HANDLER)
   add_definitions("-DBOOST_ENABLE_ASSERT_HANDLER") # turns segfault into exception
 endif()
 
-find_package(Python2 COMPONENTS Interpreter Development)
-message(STATUS "Python2_EXECUTABLE        = ${Python2_EXECUTABLE}")
-message(STATUS "Python2_INCLUDE_DIR       = ${Python2_INCLUDE_DIR}")
-message(STATUS "Python2_LIBRARY           = ${Python2_LIBRARY}")
-message(STATUS "Python2_SITELIB           = ${Python2_SITELIB}")
-message(STATUS "Python2_FOUND             = ${Python2_FOUND}")
-set(Python2_ROOT ${Python2_INCLUDE_DIR}/../..)
-message(STATUS "Python2_ROOT              = ${Python2_ROOT}")
+find_package(Python3 COMPONENTS Interpreter Development)
+message(STATUS "Python3_EXECUTABLE        = ${Python3_EXECUTABLE}")
+message(STATUS "Python3_INCLUDE_DIR       = ${Python3_INCLUDE_DIR}")
+message(STATUS "Python3_LIBRARY           = ${Python3_LIBRARY}")
+message(STATUS "Python3_SITELIB           = ${Python3_SITELIB}")
+message(STATUS "Python3_FOUND             = ${Python3_FOUND}")
+# set(Python3_ROOT ${Python3_INCLUDE_DIR}/../..)
+# message(STATUS "Python3_ROOT              = ${Python3_ROOT}")
 
-set(Python2_NUMPY_INCLUDE_DIR ${Python2_ROOT}/Extras/lib/python/numpy/core/include)
-set(Python2_NUMPY_LIBRARY     ${Python2_ROOT}/Extras/lib/python/numpy/core/lib)
-message(STATUS "Python2_NUMPY_INCLUDE_DIR = ${Python2_NUMPY_INCLUDE_DIR}")
-message(STATUS "Python2_NUMPY_LIBRARY     = ${Python2_NUMPY_LIBRARY}")
-
+set(Python3_NUMPY_INCLUDE_DIR ${Python3_SITELIB}/numpy/core/include)
+set(Python3_NUMPY_LIBRARY_DIR ${Python3_SITELIB}/numpy/core/lib)
+message(STATUS "Python3_NUMPY_INCLUDE_DIR = ${Python3_NUMPY_INCLUDE_DIR}")
+message(STATUS "Python3_NUMPY_LIBRARY_DIR = ${Python3_NUMPY_LIBRARY_DIR}")
 
 if( Boost_PYTHON_FOUND AND Boost_THREAD_FOUND )
-  if( Python2_FOUND OR Python2_LIBRARY )
+  if( Python3_FOUND OR Python3_LIBRARY )
     add_definitions(${Boost_CFLAGS})
-    set(CMAKE_REQUIRED_INCLUDES ${Python2_INCLUDE_DIR} ${Boost_INCLUDE_DIR} ${REQUIRED_INCLUDES})
+    set(CMAKE_REQUIRED_INCLUDES ${Python3_INCLUDE_DIR} ${Boost_INCLUDE_DIR} ${REQUIRED_INCLUDES})
     # On MacOSX, boost_system also needs to be linked or will output the following errors:
     # Undefined symbols for architecture x86_64:
     #   "boost::system::system_category()", referenced from: __GLOBAL__I_a in src.cxx.o
     #   "boost::system::generic_category()", referenced from: __GLOBAL__I_a in src.cxx.o
-    set(CMAKE_REQUIRED_LIBRARIES ${Python2_LIBRARY} ${Boost_PYTHON_LIBRARY} ${Boost_THREAD_LIBRARY} ${Boost_SYSTEM_LIBRARY})
+    set(CMAKE_REQUIRED_LIBRARIES ${Python3_LIBRARY} ${Boost_PYTHON_LIBRARY} ${Boost_THREAD_LIBRARY} ${Boost_SYSTEM_LIBRARY})
     set(CMAKE_REQUIRED_FLAGS ${Boost_CFLAGS} "-DCMAKE_BUILD_TYPE:STRING=Release")
 
     # # check if all header files can be included
@@ -49,7 +48,7 @@ if( Boost_PYTHON_FOUND AND Boost_THREAD_FOUND )
     set(HAVE_ALL_PYTHON_HEADERS ${HAVE_ALL_PYTHON_HEADERS} PARENT_SCOPE)
     if( HAVE_ALL_PYTHON_HEADERS )
       message(STATUS "python and boost-python found")
-      include_directories(${Python2_INCLUDE_DIR} ${Python2_NUMPY_INCLUDE_DIR}
+      include_directories(${Python3_INCLUDE_DIR} ${Python3_NUMPY_INCLUDE_DIR}
         ${OPENRAVE_INCLUDE_LOCAL_DIRS} ${OPENRAVE_CORE_INCLUDE_LOCAL_DIRS}
       )
       
@@ -70,8 +69,8 @@ if( Boost_PYTHON_FOUND AND Boost_THREAD_FOUND )
       # stdc++ has to be included before opengl libraries due to some ATI bug (http://wiki.fifengine.de/Segfault_in_cxa_allocate_exception#Workaround)
       target_link_libraries(openravepy_int 
         PUBLIC ${STDC_LIBRARY} libopenrave libopenrave-core 
-        ${Python2_LIBRARY} ${Boost_PYTHON_LIBRARY} ${Boost_THREAD_LIBRARY} ${extralibs}
-        ${Python2_NUMPY_LIBRARY}
+        ${Python3_LIBRARY} ${Boost_PYTHON_LIBRARY} ${Boost_THREAD_LIBRARY} ${extralibs}
+        ${Python3_NUMPY_LIBRARY}
       ) # PRIVATE boost_assertion_failed)
       # add_dependencies(openravepy_int libopenrave libopenrave-core)
       set_target_properties(openravepy_int PROPERTIES PREFIX "" COMPILE_FLAGS "${OPENRAVEPY_COMPILE_FLAGS}")
@@ -88,7 +87,7 @@ if( Boost_PYTHON_FOUND AND Boost_THREAD_FOUND )
         add_library(pyANN_int SHARED pyann.cpp bindings.cpp bindings.h)
         include_directories(${ANN_INCLUDE_DIR})
         # stdc++ has to be included before opengl libraries due to some ATI bug (http://wiki.fifengine.de/  Segfault_in_cxa_allocate_exception#Workaround)
-        target_link_libraries(pyANN_int PUBLIC ${STDC_LIBRARY} ANN ${Python2_LIBRARY} ${Boost_PYTHON_LIBRARY} ${Boost_THREAD_LIBRARY} ${extralibs}
+        target_link_libraries(pyANN_int PUBLIC ${STDC_LIBRARY} ANN ${Python3_LIBRARY} ${Boost_PYTHON_LIBRARY} ${Boost_THREAD_LIBRARY} ${extralibs}
                                         ) # PRIVATE boost_assertion_failed)
         set_target_properties(pyANN_int PROPERTIES PREFIX "" COMPILE_FLAGS "${ANN_CFLAGS}" )
         add_dependencies(pyANN_int ANN)
@@ -111,7 +110,7 @@ if( Boost_PYTHON_FOUND AND Boost_THREAD_FOUND )
         add_library(convexdecompositionpy SHARED convexdecompositionpy.cpp bindings.cpp bindings.h)
         include_directories(${CONVEXDECOMPOSITION_INCLUDE_DIR})
         # stdc++ has to be included before opengl libraries due to some ATI bug (http://wiki.fifengine.de/  Segfault_in_cxa_allocate_exception#Workaround)
-        target_link_libraries(convexdecompositionpy PUBLIC ${STDC_LIBRARY} convexdecomposition ${Python2_LIBRARY} ${Boost_PYTHON_LIBRARY} ${Boost_THREAD_LIBRARY} ${extralibs}
+        target_link_libraries(convexdecompositionpy PUBLIC ${STDC_LIBRARY} convexdecomposition ${Python3_LIBRARY} ${Boost_PYTHON_LIBRARY} ${Boost_THREAD_LIBRARY} ${extralibs}
                                                     ) # PRIVATE boost_assertion_failed)
         set_target_properties(convexdecompositionpy PROPERTIES PREFIX "" COMPILE_FLAGS "${CONVEXDECOMPOSITION_CFLAGS}" )
         add_dependencies(convexdecompositionpy convexdecomposition)
@@ -131,9 +130,9 @@ if( Boost_PYTHON_FOUND AND Boost_THREAD_FOUND )
     else(HAVE_ALL_PYTHON_HEADERS)
       message(STATUS "failed to use boost python libraries, check if python-numpy is installed.")
     endif(HAVE_ALL_PYTHON_HEADERS)
-  else(Python2_FOUND OR Python2_LIBRARY)
+  else(Python3_FOUND OR Python3_LIBRARY)
     message(STATUS "failed to find development python headers please install them")
-  endif(Python2_FOUND OR Python2_LIBRARY)
+  endif(Python3_FOUND OR Python3_LIBRARY)
 else(Boost_PYTHON_FOUND AND Boost_THREAD_FOUND)
   message(STATUS "failed to find boost-python or boost-thread, please install them")
 endif(Boost_PYTHON_FOUND AND Boost_THREAD_FOUND)

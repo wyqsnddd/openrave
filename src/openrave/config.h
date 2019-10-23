@@ -55,7 +55,7 @@
 
 #define OPENRAVE_PLUGINS_INSTALL_DIR "/Users/tgn3000/mujin/lib/openrave_plugins"
 #define OPENRAVE_DATA_INSTALL_DIR "/Users/tgn3000/mujin/share/openrave"
-#define OPENRAVE_PYTHON_INSTALL_DIR "/Users/tgn3000/mujin"
+#define OPENRAVE_PYTHON_INSTALL_DIR "/Users/tgn3000/mujin/openravepy"
 #define OPENRAVE_LOCALE_INSTALL_DIR "/Users/tgn3000/mujin/share/locale"
 
 // the python path that OpenRAVE was compiled with

@@ -194,6 +194,7 @@ install(FILES
 
 add_subdirectory(plugins)
 add_subdirectory(bindings-simple)
+add_subdirectory(bindings)
 
 # ========== MY PHONY COMMANDS ==========
 add_custom_target(distclean
