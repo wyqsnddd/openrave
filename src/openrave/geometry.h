@@ -716,8 +716,9 @@ public:
     RaveCameraIntrinsics<T>& operator=(const RaveCameraIntrinsics<U>&r)
     {
         distortion_model = r.distortion_model;
-        distortion_coeffs.resize(r.distortion_coeffs.size());
-        std::copy(r.distortion_coeffs.begin(),r.distortion_coeffs.end(),distortion_coeffs.begin());
+        // distortion_coeffs.resize(r.distortion_coeffs.size());
+        // std::copy(r.distortion_coeffs.begin(),r.distortion_coeffs.end(),distortion_coeffs.begin());
+        distortion_coeffs = r.distortion_coeffs;
         focal_length = r.focal_length;
         fx = r.fx;
         fy = r.fy;
