@@ -340,13 +340,15 @@ inline object toPyArray3(const std::vector<RaveVector<float> >& v)
 {
     npy_intp dims[] = { npy_intp(v.size()), npy_intp(3) };
     PyObject *pyvalues = PyArray_SimpleNew(2,dims, PyArray_FLOAT);
-    if( v.size() > 0 ) {
-        float* pf = (float*)PyArray_DATA(pyvalues);
-        FOREACHC(it,v) {
-            *pf++ = it->x;
-            *pf++ = it->y;
-            *pf++ = it->z;
-        }
+    float* pf = nullptr;
+    if( v.empty() ) {
+        return toPyArrayN(pf, 0);
+    }
+    pf = (float*) PyArray_DATA(pyvalues);
+    FOREACHC(it, v) {
+        *pf++ = it->x;
+        *pf++ = it->y;
+        *pf++ = it->z;
     }
     return toPyArrayN(pf, 3 * v.size());
     // return static_cast<numeric::array>(handle<>(pyvalues));
@@ -356,13 +358,15 @@ inline object toPyArray3(const std::vector<RaveVector<double> >& v)
 {
     npy_intp dims[] = { npy_intp(v.size()), npy_intp(3) };
     PyObject *pyvalues = PyArray_SimpleNew(2,dims, PyArray_DOUBLE);
-    if( v.size() > 0 ) {
-        double* pf = (double*)PyArray_DATA(pyvalues);
-        FOREACHC(it,v) {
-            *pf++ = it->x;
-            *pf++ = it->y;
-            *pf++ = it->z;
-        }
+    double* pf = nullptr;
+    if( v.empty() ) {
+        return toPyArrayN(pf, 0);
+    }
+    pf = (double*) PyArray_DATA(pyvalues);
+    FOREACHC(it, v) {
+        *pf++ = it->x;
+        *pf++ = it->y;
+        *pf++ = it->z;
     }
     return toPyArrayN(pf, 3 * v.size());
     // return static_cast<numeric::array>(handle<>(pyvalues));

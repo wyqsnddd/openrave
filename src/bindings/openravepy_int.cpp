@@ -254,7 +254,7 @@ object toPyArray(const TransformMatrix& t)
     pdata[4] = t.m[4]; pdata[5] = t.m[5]; pdata[6] = t.m[6]; pdata[7] = t.trans.y;
     pdata[8] = t.m[8]; pdata[9] = t.m[9]; pdata[10] = t.m[10]; pdata[11] = t.trans.z;
     pdata[12] = 0; pdata[13] = 0; pdata[14] = 0; pdata[15] = 1;
-    return static_cast<numeric::array>(handle<>(pyvalues));
+    return toPyArrayN(pdata, 16);
 }
 
 
@@ -265,7 +265,7 @@ object toPyArray(const Transform& t)
     dReal* pdata = (dReal*)PyArray_DATA(pyvalues);
     pdata[0] = t.rot.x; pdata[1] = t.rot.y; pdata[2] = t.rot.z; pdata[3] = t.rot.w;
     pdata[4] = t.trans.x; pdata[5] = t.trans.y; pdata[6] = t.trans.z;
-    return static_cast<numeric::array>(handle<>(pyvalues));
+    return toPyArrayN(pdata, 7);
 }
 
 AttributesList toAttributesList(boost::python::dict odict)
@@ -1175,12 +1175,15 @@ public:
         return bCollision;
     }
 
-    object CheckCollisionRays(boost::python::numeric::array rays, PyKinBodyPtr pbody,bool bFrontFacingOnly=false)
+    object CheckCollisionRays(bpndarray rays, PyKinBodyPtr pbody,bool bFrontFacingOnly=false)
     {
         object shape = rays.attr("shape");
         int nRays = extract<int>(shape[0]);
         if( nRays == 0 ) {
-            return boost::python::make_tuple(numeric::array(boost::python::list()).astype("i4"),numeric::array(boost::python::list()));
+            return boost::python::make_tuple(
+                np::array(boost::python::list(), np::dtype::get_builtin<int>()),
+                np::array(boost::python::list())
+            );
         }
         if( extract<int>(shape[1]) != 6 ) {
             throw openrave_exception(_("rays object needs to be a Nx6 vector\n"));
@@ -1252,7 +1255,10 @@ public:
             }
         }
 
-        return boost::python::make_tuple(static_cast<numeric::array>(handle<>(pycollision)),static_cast<numeric::array>(handle<>(pypos)));
+        return boost::python::make_tuple(
+            toPyArrayN(pcollision, nRays),
+            toPyArrayN(ppos, 6 * nRays)
+        );
     }
 
     bool CheckCollision(boost::shared_ptr<PyRay> pyray)
@@ -1324,7 +1330,9 @@ public:
             return boost::python::object();
         }
         else {
-            return boost::python::object(boost::python::handle<>(PyString_FromStringAndSize(&output[0], output.size())));
+            return boost::python::object(
+                boost::python::handle<>(PyBytes_FromStringAndSize(&output[0], output.size()))
+            );
         }
     }
 
@@ -2232,8 +2240,12 @@ BOOST_PYTHON_MODULE(openravepy_int)
     doc_options.enable_py_signatures();
     doc_options.enable_user_defined();
 #endif
-    import_array();
-    numeric::array::set_module_and_type("numpy", "ndarray");
+    // new
+    Py_Initialize();
+    np::initialize();
+    // was 
+    // import_array();
+    // boost::python::numeric::array::set_module_and_type("numpy", "ndarray");
     int_from_number<int>();
     int_from_number<uint8_t>();
     float_from_number<float>();
