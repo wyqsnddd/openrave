@@ -123,7 +123,7 @@ public:
     }
     object GetFreeParameters() const {
         if( _pIkSolver->GetNumFreeParameters() == 0 ) {
-            return numeric::array(boost::python::list());
+            return np::array(boost::python::list());
         }
         vector<dReal> values;
         _pIkSolver->GetFreeParameters(values);
