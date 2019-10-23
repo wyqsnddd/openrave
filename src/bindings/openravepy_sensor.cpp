@@ -26,7 +26,7 @@ public:
     {
         const std::vector<float> v {intrinsics.fx,0,intrinsics.cx,0,intrinsics.fy,intrinsics.cy,0,0,1};
         bpndarray arr = toPyArrayN(v.data(), 9);
-        arr.resize(3,3);
+        arr.reshape(boost::python::make_tuple(3, 3));
         K = arr;
         distortion_model = intrinsics.distortion_model;
         distortion_coeffs = toPyArray(intrinsics.distortion_coeffs);
