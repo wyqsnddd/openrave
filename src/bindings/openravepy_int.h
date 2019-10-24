@@ -158,7 +158,7 @@ inline uint64_t GetMicroTime()
 #endif
 }
 
-#if OPENRAVE_RAPIDJSON
+#ifdef OPENRAVE_RAPIDJSON
 /// conversion between rapidjson value and pyobject
 object toPyObject(const rapidjson::Value& value);
 void toRapidJSONValue(object &obj, rapidjson::Value &value, rapidjson::Document::AllocatorType& allocator);
@@ -610,7 +610,7 @@ public:
     bool SupportsCommand(const string& cmd);
     object SendCommand(const string& in, bool releasegil=false, bool lockenv=false);
 
-#if OPENRAVE_RAPIDJSON
+#ifdef OPENRAVE_RAPIDJSON
     bool SupportsJSONCommand(const string& cmd);
     object SendJSONCommand(const string& cmd, object input, bool releasegil=false, bool lockenv=false);
 #endif // OPENRAVE_RAPIDJSON

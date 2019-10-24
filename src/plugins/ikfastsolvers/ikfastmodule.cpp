@@ -70,7 +70,7 @@
 #include <boost/numeric/ublas/matrix.hpp>
 #include <boost/numeric/ublas/lu.hpp>
 
-#if OPENRAVE_RAPIDJSON
+#ifdef OPENRAVE_RAPIDJSON
 #include <rapidjson/error/en.h>
 #endif
 
@@ -327,7 +327,7 @@ public:
                         "return the type of inverse kinematics solver (IkParamterization::Type)");
 #ifdef Boost_IOSTREAMS_FOUND
 
-#if OPENRAVE_RAPIDJSON
+#ifdef OPENRAVE_RAPIDJSON
         RegisterJSONCommand("LoadIKFastFromXMLId",boost::bind(&IkFastModule::_LoadIKFastFromXMLIdCommand, this, _1, _2, _3), "Loads ikfast module from xmlid");
 #endif
 
@@ -357,7 +357,7 @@ public:
     int main(const string& cmd)
     {
         if( cmd.size() > 0 ) {
-#if OPENRAVE_RAPIDJSON
+#ifdef OPENRAVE_RAPIDJSON
             rapidjson::Document document;  ///< contains entire rapid json document to parse parameters.
             if (document.Parse(cmd.c_str(), cmd.size()).HasParseError()) {
                 throw OPENRAVE_EXCEPTION_FORMAT("Failed to parse cmd (offset %u): %s, data=%s", ((unsigned)document.GetErrorOffset())%(GetParseError_En(document.GetParseError()))%cmd, ORE_InvalidState);
@@ -443,7 +443,7 @@ public:
 
 #ifdef Boost_IOSTREAMS_FOUND
 
-#if OPENRAVE_RAPIDJSON
+#ifdef OPENRAVE_RAPIDJSON
     bool _LoadIKFastFromXMLIdCommand(const rapidjson::Value& input, rapidjson::Value& output, rapidjson::Document::AllocatorType& allocator)
     {
         if( !input.HasMember("xmlid") ) {

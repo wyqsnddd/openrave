@@ -24,7 +24,7 @@
 namespace openravepy
 {
 
-#if OPENRAVE_RAPIDJSON
+#ifdef OPENRAVE_RAPIDJSON
 
 // convert from rapidjson to python object
 object toPyObject(const rapidjson::Value& value)
@@ -57,7 +57,7 @@ object toPyObject(const rapidjson::Value& value)
             return boost::python::object(boost::python::handle<>(PyFloat_FromDouble(value.GetDouble())));
         }
         else {
-            return boost::python::object(boost::python::handle<>(PyInt_FromLong(value.GetInt64())));
+            return boost::python::object(boost::python::handle<>(PyLong_FromLong(value.GetInt64())));
         }
     case rapidjson::kNullType:
         return object();
@@ -612,7 +612,7 @@ bool PyInterfaceBase::SupportsCommand(const string& cmd)
     return _pbase->SupportsCommand(cmd);
 }
 
-#if OPENRAVE_RAPIDJSON
+#ifdef OPENRAVE_RAPIDJSON
 bool PyInterfaceBase::SupportsJSONCommand(const string& cmd)
 {
     return _pbase->SupportsJSONCommand(cmd);
@@ -646,7 +646,7 @@ object PyInterfaceBase::SendCommand(const string& in, bool releasegil, bool lock
     return object(sout.str());
 }
 
-#if OPENRAVE_RAPIDJSON
+#ifdef OPENRAVE_RAPIDJSON
 
 object PyInterfaceBase::SendJSONCommand(const string& cmd, object input, bool releasegil, bool lockenv)
 {
@@ -2306,7 +2306,7 @@ Because race conditions can pop up when trying to lock the openrave environment 
         .def("GetUserData",&PyInterfaceBase::GetUserData, GetUserData_overloads(args("key"), DOXY_FN(InterfaceBase,GetUserData)))
         .def("SupportsCommand",&PyInterfaceBase::SupportsCommand, args("cmd"), DOXY_FN(InterfaceBase,SupportsCommand))
         .def("SendCommand",&PyInterfaceBase::SendCommand, SendCommand_overloads(args("cmd","releasegil","lockenv"), sSendCommandDoc.c_str()))
-#if OPENRAVE_RAPIDJSON
+#ifdef OPENRAVE_RAPIDJSON
         .def("SupportsJSONCommand",&PyInterfaceBase::SupportsJSONCommand, args("cmd"), DOXY_FN(InterfaceBase,SupportsJSONCommand))
         .def("SendJSONCommand",&PyInterfaceBase::SendJSONCommand, SendJSONCommand_overloads(args("cmd","input","releasegil","lockenv"), DOXY_FN(InterfaceBase,SendJSONCommand)))
 #endif // OPENRAVE_RAPIDJSON

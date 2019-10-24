@@ -21,7 +21,7 @@ InterfaceBase::InterfaceBase(InterfaceType type, EnvironmentBasePtr penv) : __ty
 {
     RaveInitializeFromState(penv->GlobalState()); // make sure global state is set
     RegisterCommand("help",boost::bind(&InterfaceBase::_GetCommandHelp,this,_1,_2), "display help commands.");
-#if OPENRAVE_RAPIDJSON
+#ifdef OPENRAVE_RAPIDJSON
     RegisterJSONCommand("help",boost::bind(&InterfaceBase::_GetJSONCommandHelp,this,_1,_2,_3), "display help commands.");
 #endif // OPENRAVE_RAPIDJSON
 }
@@ -33,7 +33,7 @@ InterfaceBase::~InterfaceBase()
     __mapUserData.clear();
     __mapReadableInterfaces.clear();
     __penv.reset();
-#if OPENRAVE_RAPIDJSON
+#ifdef OPENRAVE_RAPIDJSON
     __mapJSONCommands.clear();
 #endif // OPENRAVE_RAPIDJSON
 }
@@ -210,7 +210,7 @@ bool InterfaceBase::_GetCommandHelp(std::ostream& o, std::istream& sinput) const
     return true;
 }
 
-#if OPENRAVE_RAPIDJSON
+#ifdef OPENRAVE_RAPIDJSON
 
 bool InterfaceBase::SupportsJSONCommand(const std::string& cmd)
 {
