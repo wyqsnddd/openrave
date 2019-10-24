@@ -15,8 +15,11 @@ else()
 	set(MY_INSTALL_DIR $ENV{MUJIN_INSTALL_DIR})
 endif()
 
-# hard code installation path for now
-set(CMAKE_INSTALL_PREFIX ${MY_INSTALL_DIR})
+if(NOT DEFINED CMAKE_INSTALL_PREFIX)
+    set(CMAKE_INSTALL_PREFIX ${MY_INSTALL_DIR})
+else()
+    set(MY_INSTALL_DIR ${CMAKE_INSTALL_PREFIX})
+endif()
 
 set(MY_INSTALL_INCLUDE_DIR ${MY_INSTALL_DIR}/include)
 set(MY_INSTALL_SHARE_DIR   ${MY_INSTALL_DIR}/share)
