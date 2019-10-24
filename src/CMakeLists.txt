@@ -35,7 +35,7 @@ set(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib")
 # include search path
 include_directories(
 	/usr/local /usr/local/include
-	${MY_INSTALL_INCLUDE_DIR} ${CMAKE_SOURCE_DIR}
+	${CMAKE_SOURCE_DIR} ${CMAKE_SOURCE_DIR}/3rdparty 
 )
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake")
