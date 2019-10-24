@@ -5,4 +5,4 @@ set_target_properties(ParabolicPathSmooth PROPERTIES COMPILE_FLAGS "${PLUGIN_COM
 target_link_libraries(ParabolicPathSmooth PUBLIC openrave ) # PRIVATE boost_assertion_failed)
 
 add_executable(testparabolicramp testparabolicramp.cpp)
-target_link_libraries(testparabolicramp ParabolicPathSmooth openrave ${LOG4CXX_LIBRARIES} ${Boost_SYSTEM_LIBRARY})
+target_link_libraries(testparabolicramp ParabolicPathSmooth openrave ${LOG4CXX_LIBRARY} ${Boost_SYSTEM_LIBRARY})

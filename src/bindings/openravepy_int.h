@@ -19,7 +19,7 @@
 
 #include <Python.h>
 
-#include "openrave-core.h"
+#include <openrave-core/openrave-core.h>
 
 #ifndef _WIN32
 #include <sys/time.h>

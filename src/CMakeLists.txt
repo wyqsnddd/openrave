@@ -95,7 +95,8 @@ endif()
 set(Python3_ROOT              "/home/mujin/python3")
 set(Python3_EXECUTABLE        "${Python3_ROOT}/bin/python3")
 set(Python3_INCLUDE_DIR       "${Python3_ROOT}/include/python3.7m")
-set(Python3_LIBRARY           "${Python3_ROOT}/lib/libpython3.7m.a")
+# ./configure --prefix=/home/mujin/python3/ --enable-shared
+set(Python3_LIBRARY           "${Python3_ROOT}/lib/libpython3.7m.so")
 set(Python3_SITELIB           "${Python3_ROOT}/lib/libpython3.7/site-packages")
 set(Python3_NUMPY_INCLUDE_DIR "${Python3_SITELIB}/numpy/core/include")
 set(Python3_NUMPY_LIBRARY_DIR "${Python3_SITELIB}/numpy/core/lib")
@@ -128,7 +129,6 @@ message(STATUS "Compiling OpenRAVE Version ${OPENRAVE_VERSION}, soversion = ${OP
 set(OPENRAVE_SHARE_DIR "share/openrave" CACHE PATH "Relative path for shared OpenRAVE data")
 set(OPENRAVE_DATA_INSTALL_DIR "${OPENRAVE_SHARE_DIR}" CACHE PATH "Scene and robot files installation directory")
 set(OPENRAVE_PLUGINS_INSTALL_DIR "lib/openrave_plugins" CACHE PATH "OpenRAVE plugins installation directory")
-set(OPENRAVEPY_INSTALL_DIR "${OPENRAVE_PYTHON_INSTALL_DIR}/openravepy" CACHE PATH "OpenRAVE Python bindings (openravepy) installation directory")
 set(OPENRAVE_LOCALE_INSTALL_DIR "share/locale" CACHE PATH "Relative path for OpenRAVE translation files")
 set(OPENRAVE_OCTAVE_INSTALL_DIR "${OPENRAVE_SHARE_DIR}/octave" CACHE PATH "OpenRAVE Octave bindings installation directory")
 set(OPENRAVE_MATLAB_INSTALL_DIR "${OPENRAVE_SHARE_DIR}/matlab" CACHE PATH "OpenRAVE MATLAB bindings installation directory")
@@ -150,9 +150,11 @@ set(OPENRAVE_PYTHON_INSTALL_ABSOLUTE_DIR "${CMAKE_INSTALL_PREFIX}/${OPENRAVE_PYT
 	CACHE PATH "Absolute dir for python on target OS path, used to write to header file")
 set(OPENRAVE_LOCALE_INSTALL_ABSOLUTE_DIR "${CMAKE_INSTALL_PREFIX}/${OPENRAVE_LOCALE_INSTALL_DIR}"
 	CACHE PATH "Absolute dir for translation files on target OS path, used to write to header file")
+# set(OPENRAVEPY_INSTALL_DIR "${OPENRAVE_PYTHON_INSTALL_ABSOLUTE_DIR}/openravepy" CACHE PATH "OpenRAVE Python bindings (openravepy) installation directory")
+# set(OPENRAVEPY_VER_NAME "_openravepy_${OPENRAVE_VERSION_MAJOR}_${OPENRAVE_VERSION_MINOR}")
+set(OPENRAVEPY_VER_INSTALL_DIR "${CMAKE_INSTALL_PREFIX}") 
 
-set(OPENRAVEPY_VER_NAME "_openravepy_${OPENRAVE_VERSION_MAJOR}_${OPENRAVE_VERSION_MINOR}")
-set(OPENRAVEPY_VER_INSTALL_DIR "${OPENRAVEPY_INSTALL_DIR}/${OPENRAVEPY_VER_NAME}") 
+message(STATUS "OPENRAVEPY_VER_INSTALL_DIR = ${OPENRAVEPY_VER_INSTALL_DIR}")
 
 set(OPENRAVE_PRECISION 1) # double
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/openrave/config.h.in
