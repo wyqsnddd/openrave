@@ -1,12 +1,8 @@
 # -*- coding: utf-8 -*-
 cmake_minimum_required(VERSION 2.8.9)
-
 project(openrave)
-set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/../modules-cmake")
-
-message(STATUS "CMAKE_MODULE_PATH = ${CMAKE_MODULE_PATH}")
-
 set(CMAKE_CXX_STANDARD 11)
+
 cmake_policy(SET CMP0002 NEW)
 cmake_policy(SET CMP0003 NEW)
 cmake_policy(SET CMP0023 NEW)
@@ -38,28 +34,21 @@ set(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib")
  
 # include search path
 include_directories(
-	/usr/local /usr/local/include ./include ./3rdparty 
-	${MY_INSTALL_INCLUDE_DIR} ${MY_INSTALL_INCLUDE_DIR}/eigen3
-	${CMAKE_SOURCE_DIR}
+	/usr/local /usr/local/include
+	${MY_INSTALL_INCLUDE_DIR} ${CMAKE_SOURCE_DIR}
 )
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake")
 set(CMAKE_PREFIX_PATH "${MY_INSTALL_CMAKE_DIR}")
-# message("CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}")
 
 # required packages
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/../modules-cmake")
 find_package(PkgConfig)
 pkg_check_modules(LOG4CXX liblog4cxx)
 
 if(APPLE)
 	set(OpenRAVE_PYTHON_DIR "${MY_INSTALL_INCLUDE_DIR}/openrave/python")
-	set(BOOST_ROOT    "/usr/local/Cellar/boost")
-	set(BOOST_VERSION "1.71.0")
-	set(BOOST_LIBRARYDIR "${BOOST_ROOT}/${BOOST_VERSION}/lib")
-	set(BOOST_INCLUDEDIR "${BOOST_ROOT}/${BOOST_VERSION}/include")
-	set(BOOST_PYTHON3_LIBRARYDIR "${BOOST_ROOT}-python3/1.71.0_1/lib")
-	find_package(Boost REQUIRED COMPONENTS regex filesystem system thread iostreams date_time)
-	find_package(Boost COMPONENTS python REQUIRED)
+	find_package(Boost REQUIRED COMPONENTS regex filesystem system thread iostreams date_time python)
 	include_directories(${BOOST_INCLUDEDIR})
 	link_directories(${BOOST_LIBRARYDIR})
 else()
@@ -79,41 +68,20 @@ if( Boost_FILESYSTEM_FOUND AND Boost_SYSTEM_FOUND )
   add_definitions(-DHAVE_BOOST_FILESYSTEM)
 endif()
 
-# set(PYTHON_LIBRARY )
-# find_package(Python3 REQUIRED COMPONENTS Interpreter Development NumPy)
-# set(Python_ADDITIONAL_VERSIONS 3.5 3.6 3.7 3.8)
-# find_package(PythonInterp)
-# find_package(PythonLibs)
-
-#   PYTHONLIBS_FOUND           - have the Python libs been found
-#   PYTHON_LIBRARIES           - path to the python library
-#   PYTHON_INCLUDE_PATH        - path to where Python.h is found (deprecated)
-#   PYTHON_INCLUDE_DIRS        - path to where Python.h is found
-#   PYTHON_DEBUG_LIBRARIES     - path to the debug library (deprecated)
-#   PYTHONLIBS_VERSION_STRING
-
-set(Python3_ROOT              "/home/mujin/python3")
-set(Python3_MINOR_VERSION     "7")
-set(Python3_EXECUTABLE        "${Python3_ROOT}/bin/python3")
-set(Python3_INCLUDE_DIR       "${Python3_ROOT}/include/python3.${Python3_MINOR_VERSION}m")
-# ./configure --prefix=/home/mujin/python3/ --enable-shared
-set(Python3_LIBRARY           "${Python3_ROOT}/lib/libpython3.${Python3_MINOR_VERSION}m.so")
-set(Python3_SITELIB           "${Python3_ROOT}/lib/libpython3.${Python3_MINOR_VERSION}/site-packages")
+if(APPLE)
+    find_package(Python3 REQUIRED COMPONENTS Interpreter Development NumPy)
+    set(Python3_ROOT ${Python3_INCLUDE_DIR}/../..) 
+else()
+	set(Python3_ROOT              "/home/mujin/python3")
+	set(Python3_MINOR_VERSION     "7")
+	set(Python3_EXECUTABLE        "${Python3_ROOT}/bin/python3")
+	set(Python3_INCLUDE_DIR       "${Python3_ROOT}/include/python3.${Python3_MINOR_VERSION}m")
+	# ./configure --prefix=/home/mujin/python3/ --enable-shared
+	set(Python3_LIBRARY           "${Python3_ROOT}/lib/libpython3.${Python3_MINOR_VERSION}m.so")
+	set(Python3_SITELIB           "${Python3_ROOT}/lib/libpython3.${Python3_MINOR_VERSION}/site-packages")
+endif()
 set(Python3_NUMPY_INCLUDE_DIR "${Python3_SITELIB}/numpy/core/include")
 set(Python3_NUMPY_LIBRARY_DIR "${Python3_SITELIB}/numpy/core/lib")
-
-
-# message(STATUS "")
-# message(STATUS "=========================================================")
-# message(STATUS "Summary of FindPython3")
-# message(STATUS "PYTHONLIBS_FOUND          = ${PYTHONLIBS_FOUND}")
-# message(STATUS "PYTHON_LIBRARIES          = ${PYTHON_LIBRARIES}")
-# message(STATUS "PYTHON_INCLUDE_PATH       = ${PYTHON_INCLUDE_PATH}")
-# message(STATUS "PYTHON_INCLUDE_DIRS       = ${PYTHON_INCLUDE_DIRS}")
-# message(STATUS "PYTHON_DEBUG_LIBRARIES    = ${PYTHON_DEBUG_LIBRARIES}")
-# message(STATUS "PYTHONLIBS_VERSION_STRING = ${PYTHONLIBS_VERSION_STRING}")
-# message(STATUS "=========================================================")
-# message(STATUS "")
 
 # my compile flags
 set(CMAKE_CXX_FLAGS         "-fPIC -Wall -Wextra -Werror=return-type")# -fvisibility=hidden")
