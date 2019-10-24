@@ -37,18 +37,11 @@ set(CMAKE_BUILD_WITH_INSTALL_RPATH FALSE)
 set(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib")
  
 # include search path
-include_directories(/usr/local /usr/local/include ./include ./3rdparty ${MY_INSTALL_INCLUDE_DIR} ${MY_INSTALL_INCLUDE_DIR}/eigen3)
-if(NOT APPLE)
-	find_package(OpenRAVE REQUIRED)
-	include_directories(${OpenRAVE_INCLUDE_DIRS} ${OpenRAVE_PYTHON_DIR})
-    # capitalize cmake variable names (not values) since OpenRAVE is an exception
-	set(OPENRAVE_VERSION         ${OpenRAVE_VERSION})
-	set(OPENRAVE_LIBRARIES       ${OpenRAVE_LIBRARIES})
-	set(OPENRAVE_INCLUDE_DIRS    ${OpenRAVE_INCLUDE_DIRS})
-	set(OPENRAVE_CORE_LIBRARIES  ${OpenRAVE_CORE_LIBRARIES})
-
-	link_directories(${MY_INSTALL_LIBRARY_DIR})
-endif()
+include_directories(
+	/usr/local /usr/local/include ./include ./3rdparty 
+	${MY_INSTALL_INCLUDE_DIR} ${MY_INSTALL_INCLUDE_DIR}/eigen3
+	${CMAKE_SOURCE_DIR}
+)
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake")
 set(CMAKE_PREFIX_PATH "${MY_INSTALL_CMAKE_DIR}")
