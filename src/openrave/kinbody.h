@@ -157,7 +157,7 @@ public:
         /// \return bool true if the geometry has a concept of empty volume nad tInnerEmptyVolume/abInnerEmptyVolume are filled
         bool ComputeInnerEmptyVolume(Transform& tInnerEmptyVolume, Vector& abInnerEmptyExtents) const;
 
-#if OPENRAVE_RAPIDJSON
+#ifdef OPENRAVE_RAPIDJSON
         ///< \param multiply all translational values by fUnitScale
         virtual void SerializeJSON(rapidjson::Value &value, rapidjson::Document::AllocatorType& allocator, const dReal fUnitScale=1.0, int options=0);
 

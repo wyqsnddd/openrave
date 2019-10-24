@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 2.9)
 set(CMAKE_CXX_STANDARD 11)
-find_package(libxml2 REQUIRED)
+find_package(LibXml2 REQUIRED)
 
 check_function_exists(mkstemp HAVE_MKSTEMP)
 if( HAVE_MKSTEMP )

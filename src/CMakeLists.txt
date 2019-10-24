@@ -2,6 +2,9 @@
 cmake_minimum_required(VERSION 2.8.9)
 
 project(openrave)
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/../modules-cmake")
+
+message(STATUS "CMAKE_MODULE_PATH = ${CMAKE_MODULE_PATH}")
 
 set(CMAKE_CXX_STANDARD 11)
 cmake_policy(SET CMP0002 NEW)
@@ -34,34 +37,20 @@ set(CMAKE_BUILD_WITH_INSTALL_RPATH FALSE)
 set(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib")
  
 # include search path
-include_directories(/usr/local/include ./include ./3rdparty ${MY_INSTALL_INCLUDE_DIR} ${MY_INSTALL_INCLUDE_DIR}/eigen3)
-if(NOT APPLE)
-	find_package(OpenRAVE REQUIRED)
-	include_directories(${OpenRAVE_INCLUDE_DIRS} ${OpenRAVE_PYTHON_DIR})
-    # capitalize cmake variable names (not values) since OpenRAVE is an exception
-	set(OPENRAVE_VERSION         ${OpenRAVE_VERSION})
-	set(OPENRAVE_LIBRARIES       ${OpenRAVE_LIBRARIES})
-	set(OPENRAVE_INCLUDE_DIRS    ${OpenRAVE_INCLUDE_DIRS})
-	set(OPENRAVE_CORE_LIBRARIES  ${OpenRAVE_CORE_LIBRARIES})
-
-	link_directories(${MY_INSTALL_LIBRARY_DIR})
-endif()
+include_directories(
+	/usr/local /usr/local/include ./include ./3rdparty 
+	${MY_INSTALL_INCLUDE_DIR} ${MY_INSTALL_INCLUDE_DIR}/eigen3
+	${CMAKE_SOURCE_DIR}
+)
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake")
 set(CMAKE_PREFIX_PATH "${MY_INSTALL_CMAKE_DIR}")
 # message("CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}")
 
 # required packages
-# find_package(Eigen3 REQUIRED)
-# message(STATUS "Eigen3 version: ${Eigen3_VERSION} :: ${EIGEN3_INCLUDE_DIRS}")
-# find_package(GMP REQUIRED)
-# message(STATUS "GMP version: ${GMP_VERSION}")
-# find_package(MPFR REQUIRED)
-# message(STATUS "MPFR version: ${MPFR_VERSION}")
-# find_package(MPC REQUIRED)
-# message(STATUS "MPC version: ${MPC_VERSION}")
-# find_package(SymEngine 0.5.0 REQUIRED)
-# message(STATUS "SymEngine version: ${SymEngine_VERSION} :: ${SYMENGINE_INCLUDE_DIRS} :: ${SYMENGINE_LIBRARIES} :: ${SYMENGINE_DEFINITIONS}")
+find_package(PkgConfig)
+pkg_check_modules(LOG4CXX liblog4cxx)
+
 if(APPLE)
 	set(OpenRAVE_PYTHON_DIR "${MY_INSTALL_INCLUDE_DIR}/openrave/python")
 	set(BOOST_ROOT    "/usr/local/Cellar/boost")
@@ -73,13 +62,58 @@ if(APPLE)
 	find_package(Boost COMPONENTS python REQUIRED)
 	include_directories(${BOOST_INCLUDEDIR})
 	link_directories(${BOOST_LIBRARYDIR})
-else()	
-	find_package(Boost REQUIRED COMPONENTS system program_options filesystem iostreams)
+else()
+	set(BOOST_ROOT               "/home/mujin/boost_1_71_0")
+	set(BOOST_VERSION            "1.71.0")
+	set(BOOST_INCLUDEDIR         "${BOOST_ROOT}/include")
+	set(BOOST_LIBRARYDIR         "${BOOST_ROOT}/lib")
+	set(Boost_NO_SYSTEM_PATHS ON CACHE BOOL "Force to find using hints")
+	set(BOOST_PYTHON3_LIBRARYDIR "${BOOST_LIBRARYDIR}/libboost_python37")
+	find_package(Boost REQUIRED COMPONENTS regex filesystem system thread iostreams date_time)
+	# find_package(Boost COMPONENTS python REQUIRED)
+	include_directories(${BOOST_INCLUDEDIR})
+	link_directories(${BOOST_LIBRARYDIR})
 endif()
 
 if( Boost_FILESYSTEM_FOUND AND Boost_SYSTEM_FOUND )
   add_definitions(-DHAVE_BOOST_FILESYSTEM)
 endif()
+
+# set(PYTHON_LIBRARY )
+# find_package(Python3 REQUIRED COMPONENTS Interpreter Development NumPy)
+# set(Python_ADDITIONAL_VERSIONS 3.5 3.6 3.7 3.8)
+# find_package(PythonInterp)
+# find_package(PythonLibs)
+
+#   PYTHONLIBS_FOUND           - have the Python libs been found
+#   PYTHON_LIBRARIES           - path to the python library
+#   PYTHON_INCLUDE_PATH        - path to where Python.h is found (deprecated)
+#   PYTHON_INCLUDE_DIRS        - path to where Python.h is found
+#   PYTHON_DEBUG_LIBRARIES     - path to the debug library (deprecated)
+#   PYTHONLIBS_VERSION_STRING
+
+set(Python3_ROOT              "/home/mujin/python3")
+set(Python3_MINOR_VERSION     "7")
+set(Python3_EXECUTABLE        "${Python3_ROOT}/bin/python3")
+set(Python3_INCLUDE_DIR       "${Python3_ROOT}/include/python3.${Python3_MINOR_VERSION}m")
+# ./configure --prefix=/home/mujin/python3/ --enable-shared
+set(Python3_LIBRARY           "${Python3_ROOT}/lib/libpython3.${Python3_MINOR_VERSION}m.so")
+set(Python3_SITELIB           "${Python3_ROOT}/lib/libpython3.${Python3_MINOR_VERSION}/site-packages")
+set(Python3_NUMPY_INCLUDE_DIR "${Python3_SITELIB}/numpy/core/include")
+set(Python3_NUMPY_LIBRARY_DIR "${Python3_SITELIB}/numpy/core/lib")
+
+
+# message(STATUS "")
+# message(STATUS "=========================================================")
+# message(STATUS "Summary of FindPython3")
+# message(STATUS "PYTHONLIBS_FOUND          = ${PYTHONLIBS_FOUND}")
+# message(STATUS "PYTHON_LIBRARIES          = ${PYTHON_LIBRARIES}")
+# message(STATUS "PYTHON_INCLUDE_PATH       = ${PYTHON_INCLUDE_PATH}")
+# message(STATUS "PYTHON_INCLUDE_DIRS       = ${PYTHON_INCLUDE_DIRS}")
+# message(STATUS "PYTHON_DEBUG_LIBRARIES    = ${PYTHON_DEBUG_LIBRARIES}")
+# message(STATUS "PYTHONLIBS_VERSION_STRING = ${PYTHONLIBS_VERSION_STRING}")
+# message(STATUS "=========================================================")
+# message(STATUS "")
 
 # my compile flags
 set(CMAKE_CXX_FLAGS         "-fPIC -Wall -Wextra -Werror=return-type")# -fvisibility=hidden")
@@ -96,7 +130,6 @@ message(STATUS "Compiling OpenRAVE Version ${OPENRAVE_VERSION}, soversion = ${OP
 set(OPENRAVE_SHARE_DIR "share/openrave" CACHE PATH "Relative path for shared OpenRAVE data")
 set(OPENRAVE_DATA_INSTALL_DIR "${OPENRAVE_SHARE_DIR}" CACHE PATH "Scene and robot files installation directory")
 set(OPENRAVE_PLUGINS_INSTALL_DIR "lib/openrave_plugins" CACHE PATH "OpenRAVE plugins installation directory")
-set(OPENRAVEPY_INSTALL_DIR "${OPENRAVE_PYTHON_INSTALL_DIR}/openravepy" CACHE PATH "OpenRAVE Python bindings (openravepy) installation directory")
 set(OPENRAVE_LOCALE_INSTALL_DIR "share/locale" CACHE PATH "Relative path for OpenRAVE translation files")
 set(OPENRAVE_OCTAVE_INSTALL_DIR "${OPENRAVE_SHARE_DIR}/octave" CACHE PATH "OpenRAVE Octave bindings installation directory")
 set(OPENRAVE_MATLAB_INSTALL_DIR "${OPENRAVE_SHARE_DIR}/matlab" CACHE PATH "OpenRAVE MATLAB bindings installation directory")
@@ -118,6 +151,11 @@ set(OPENRAVE_PYTHON_INSTALL_ABSOLUTE_DIR "${CMAKE_INSTALL_PREFIX}/${OPENRAVE_PYT
 	CACHE PATH "Absolute dir for python on target OS path, used to write to header file")
 set(OPENRAVE_LOCALE_INSTALL_ABSOLUTE_DIR "${CMAKE_INSTALL_PREFIX}/${OPENRAVE_LOCALE_INSTALL_DIR}"
 	CACHE PATH "Absolute dir for translation files on target OS path, used to write to header file")
+# set(OPENRAVEPY_INSTALL_DIR "${OPENRAVE_PYTHON_INSTALL_ABSOLUTE_DIR}/openravepy" CACHE PATH "OpenRAVE Python bindings (openravepy) installation directory")
+# set(OPENRAVEPY_VER_NAME "_openravepy_${OPENRAVE_VERSION_MAJOR}_${OPENRAVE_VERSION_MINOR}")
+set(OPENRAVEPY_VER_INSTALL_DIR "${CMAKE_INSTALL_PREFIX}") 
+
+message(STATUS "OPENRAVEPY_VER_INSTALL_DIR = ${OPENRAVEPY_VER_INSTALL_DIR}")
 
 set(OPENRAVE_PRECISION 1) # double
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/openrave/config.h.in
@@ -193,7 +231,7 @@ install(FILES
 # endif()
 
 add_subdirectory(plugins)
-add_subdirectory(bindings-simple)
+# add_subdirectory(bindings-simple)
 add_subdirectory(bindings)
 
 # ========== MY PHONY COMMANDS ==========

@@ -2,21 +2,21 @@ cmake_minimum_required(VERSION 2.9)
 set(CMAKE_CXX_STANDARD 11)
 cmake_policy(SET CMP0046 NEW)
 
-find_package(Boost COMPONENTS REQUIRED regex filesystem system thread iostreams date_time) # python
+find_package(Boost COMPONENTS REQUIRED regex filesystem system thread iostreams date_time)
 include_directories(${BOOST_INCLUDEDIR})
 link_directories(${BOOST_LIBRARYDIR})
 
-find_package(zlib REQUIRED)
-find_package(libxml2 REQUIRED)
+# find_package(zlib REQUIRED)
+find_package(LibXml2 REQUIRED)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../minizip /usr/local/include)
 # need to link by
 # ln -s /usr/local/Cellar/libxml2/2.9.9_2/include/libxml2/libxml /usr/local/include/libxml
 
-message(STATUS "ZLIB_FOUND             = ${ZLIB_FOUND}")
+# message(STATUS "ZLIB_FOUND             = ${ZLIB_FOUND}")
 message(STATUS "Boost_FILESYSTEM_FOUND = ${Boost_FILESYSTEM_FOUND}")
 message(STATUS "Boost_SYSTEM_FOUND     = ${Boost_SYSTEM_FOUND}")
 
-if( ZLIB_FOUND AND Boost_FILESYSTEM_FOUND AND Boost_SYSTEM_FOUND )
+if( Boost_FILESYSTEM_FOUND AND Boost_SYSTEM_FOUND )
 	message(STATUS "Compiling with COLLADA support from sources!")
 	if( LIBXML2_DEFINITIONS )
 	  add_definitions(${LIBXML2_DEFINITIONS})
@@ -52,6 +52,7 @@ if( ZLIB_FOUND AND Boost_FILESYSTEM_FOUND AND Boost_SYSTEM_FOUND )
 	set_target_properties(collada15reader PROPERTIES COMPILE_FLAGS "${libpcrecpp_CFLAGS_OTHERS} ${EXTRA_COMPILE_FLAGS} -DDOM_INCLUDE_LIBXML -DCOLLADA_DOM_DAEFLOAT_IS64 -DCOLLADA_DOM_SUPPORT150 ${Boost_CFLAGS}"
 	  LINK_FLAGS "${libpcrecpp_LDFLAGS_OTHERS}")
 
+	install(TARGETS collada15reader DESTINATION lib)
 else()
 	if( NOT Boost_FILESYSTEM_FOUND )
 	  message(STATUS "Need to install boost filesystem")
@@ -64,8 +65,6 @@ else()
 	endif()
 	message(STATUS "No COLLADA support")
 endif()
-
-install(TARGETS collada15reader DESTINATION lib)
 
 # set the flags
 set(COLLADA_DOM_FOUND 1 PARENT_SCOPE)

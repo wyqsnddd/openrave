@@ -8,7 +8,7 @@ add_subdirectory(pcre)
 
 add_subdirectory(convexdecomposition)
 add_subdirectory(crlibm)
-add_subdirectory(flann)
+# add_subdirectory(flann)
 add_subdirectory(ivcon)
 add_subdirectory(qhull)
 
