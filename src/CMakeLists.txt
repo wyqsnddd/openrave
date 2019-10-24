@@ -93,11 +93,12 @@ endif()
 #   PYTHONLIBS_VERSION_STRING
 
 set(Python3_ROOT              "/home/mujin/python3")
+set(Python3_MINOR_VERSION     "7")
 set(Python3_EXECUTABLE        "${Python3_ROOT}/bin/python3")
-set(Python3_INCLUDE_DIR       "${Python3_ROOT}/include/python3.7m")
+set(Python3_INCLUDE_DIR       "${Python3_ROOT}/include/python3.${Python3_MINOR_VERSION}m")
 # ./configure --prefix=/home/mujin/python3/ --enable-shared
-set(Python3_LIBRARY           "${Python3_ROOT}/lib/libpython3.7m.so")
-set(Python3_SITELIB           "${Python3_ROOT}/lib/libpython3.7/site-packages")
+set(Python3_LIBRARY           "${Python3_ROOT}/lib/libpython3.${Python3_MINOR_VERSION}m.so")
+set(Python3_SITELIB           "${Python3_ROOT}/lib/libpython3.${Python3_MINOR_VERSION}/site-packages")
 set(Python3_NUMPY_INCLUDE_DIR "${Python3_SITELIB}/numpy/core/include")
 set(Python3_NUMPY_LIBRARY_DIR "${Python3_SITELIB}/numpy/core/lib")
 
