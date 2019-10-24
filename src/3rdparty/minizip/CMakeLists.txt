@@ -6,7 +6,7 @@ if( MSVC )
   set(minizip_files ${minizip_files} iowin32.c  iowin32.h)
 endif()
 add_library(minizip STATIC ${minizip_files})
-set_target_properties(minizip PROPERTIES COMPILE_FLAGS "${EXTRA_COMPILE_FLAGS}")
+set_target_properties(minizip PROPERTIES COMPILE_FLAGS "-fPIC ${EXTRA_COMPILE_FLAGS}")
 target_link_libraries(minizip ${ZLIB_LIBRARIES})
 
 install(TARGETS minizip DESTINATION lib)

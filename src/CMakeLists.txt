@@ -2,6 +2,9 @@
 cmake_minimum_required(VERSION 2.8.9)
 
 project(openrave)
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/../modules-cmake")
+
+message(STATUS "CMAKE_MODULE_PATH = ${CMAKE_MODULE_PATH}")
 
 set(CMAKE_CXX_STANDARD 11)
 cmake_policy(SET CMP0002 NEW)
@@ -34,7 +37,7 @@ set(CMAKE_BUILD_WITH_INSTALL_RPATH FALSE)
 set(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib")
  
 # include search path
-include_directories(/usr/local/include ./include ./3rdparty ${MY_INSTALL_INCLUDE_DIR} ${MY_INSTALL_INCLUDE_DIR}/eigen3)
+include_directories(/usr/local /usr/local/include ./include ./3rdparty ${MY_INSTALL_INCLUDE_DIR} ${MY_INSTALL_INCLUDE_DIR}/eigen3)
 if(NOT APPLE)
 	find_package(OpenRAVE REQUIRED)
 	include_directories(${OpenRAVE_INCLUDE_DIRS} ${OpenRAVE_PYTHON_DIR})
@@ -73,13 +76,56 @@ if(APPLE)
 	find_package(Boost COMPONENTS python REQUIRED)
 	include_directories(${BOOST_INCLUDEDIR})
 	link_directories(${BOOST_LIBRARYDIR})
-else()	
-	find_package(Boost REQUIRED COMPONENTS system program_options filesystem iostreams)
+else()
+	set(BOOST_ROOT               "/home/mujin/boost_1_71_0")
+	set(BOOST_VERSION            "1.71.0")
+	set(BOOST_INCLUDEDIR         "${BOOST_ROOT}/include")
+	set(BOOST_LIBRARYDIR         "${BOOST_ROOT}/lib")
+	set(Boost_NO_SYSTEM_PATHS ON CACHE BOOL "Force to find using hints")
+	set(BOOST_PYTHON3_LIBRARYDIR "${BOOST_LIBRARYDIR}/libboost_python37")
+	find_package(Boost REQUIRED COMPONENTS regex filesystem system thread iostreams date_time)
+	# find_package(Boost COMPONENTS python REQUIRED)
+	include_directories(${BOOST_INCLUDEDIR})
+	link_directories(${BOOST_LIBRARYDIR})
 endif()
 
 if( Boost_FILESYSTEM_FOUND AND Boost_SYSTEM_FOUND )
   add_definitions(-DHAVE_BOOST_FILESYSTEM)
 endif()
+
+# set(PYTHON_LIBRARY )
+# find_package(Python3 REQUIRED COMPONENTS Interpreter Development NumPy)
+# set(Python_ADDITIONAL_VERSIONS 3.5 3.6 3.7 3.8)
+# find_package(PythonInterp)
+# find_package(PythonLibs)
+
+#   PYTHONLIBS_FOUND           - have the Python libs been found
+#   PYTHON_LIBRARIES           - path to the python library
+#   PYTHON_INCLUDE_PATH        - path to where Python.h is found (deprecated)
+#   PYTHON_INCLUDE_DIRS        - path to where Python.h is found
+#   PYTHON_DEBUG_LIBRARIES     - path to the debug library (deprecated)
+#   PYTHONLIBS_VERSION_STRING
+
+set(Python3_ROOT              "/home/mujin/python3")
+set(Python3_EXECUTABLE        "${Python3_ROOT}/bin/python3")
+set(Python3_INCLUDE_DIR       "${Python3_ROOT}/include/python3.7m")
+set(Python3_LIBRARY           "${Python3_ROOT}/lib/libpython3.7m.a")
+set(Python3_SITELIB           "${Python3_ROOT}/lib/libpython3.7/site-packages")
+set(Python3_NUMPY_INCLUDE_DIR "${Python3_SITELIB}/numpy/core/include")
+set(Python3_NUMPY_LIBRARY_DIR "${Python3_SITELIB}/numpy/core/lib")
+
+
+# message(STATUS "")
+# message(STATUS "=========================================================")
+# message(STATUS "Summary of FindPython3")
+# message(STATUS "PYTHONLIBS_FOUND          = ${PYTHONLIBS_FOUND}")
+# message(STATUS "PYTHON_LIBRARIES          = ${PYTHON_LIBRARIES}")
+# message(STATUS "PYTHON_INCLUDE_PATH       = ${PYTHON_INCLUDE_PATH}")
+# message(STATUS "PYTHON_INCLUDE_DIRS       = ${PYTHON_INCLUDE_DIRS}")
+# message(STATUS "PYTHON_DEBUG_LIBRARIES    = ${PYTHON_DEBUG_LIBRARIES}")
+# message(STATUS "PYTHONLIBS_VERSION_STRING = ${PYTHONLIBS_VERSION_STRING}")
+# message(STATUS "=========================================================")
+# message(STATUS "")
 
 # my compile flags
 set(CMAKE_CXX_FLAGS         "-fPIC -Wall -Wextra -Werror=return-type")# -fvisibility=hidden")
@@ -118,6 +164,9 @@ set(OPENRAVE_PYTHON_INSTALL_ABSOLUTE_DIR "${CMAKE_INSTALL_PREFIX}/${OPENRAVE_PYT
 	CACHE PATH "Absolute dir for python on target OS path, used to write to header file")
 set(OPENRAVE_LOCALE_INSTALL_ABSOLUTE_DIR "${CMAKE_INSTALL_PREFIX}/${OPENRAVE_LOCALE_INSTALL_DIR}"
 	CACHE PATH "Absolute dir for translation files on target OS path, used to write to header file")
+
+set(OPENRAVEPY_VER_NAME "_openravepy_${OPENRAVE_VERSION_MAJOR}_${OPENRAVE_VERSION_MINOR}")
+set(OPENRAVEPY_VER_INSTALL_DIR "${OPENRAVEPY_INSTALL_DIR}/${OPENRAVEPY_VER_NAME}") 
 
 set(OPENRAVE_PRECISION 1) # double
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/openrave/config.h.in
@@ -193,7 +242,7 @@ install(FILES
 # endif()
 
 add_subdirectory(plugins)
-add_subdirectory(bindings-simple)
+# add_subdirectory(bindings-simple)
 add_subdirectory(bindings)
 
 # ========== MY PHONY COMMANDS ==========

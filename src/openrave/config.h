@@ -53,10 +53,10 @@
 // if 1, double precision
 #define OPENRAVE_PRECISION 1
 
-#define OPENRAVE_PLUGINS_INSTALL_DIR "/Users/tgn3000/mujin/lib/openrave_plugins"
-#define OPENRAVE_DATA_INSTALL_DIR "/Users/tgn3000/mujin/share/openrave"
-#define OPENRAVE_PYTHON_INSTALL_DIR "/Users/tgn3000/mujin/openravepy"
-#define OPENRAVE_LOCALE_INSTALL_DIR "/Users/tgn3000/mujin/share/locale"
+#define OPENRAVE_PLUGINS_INSTALL_DIR "/home/mujin/mujin/jhbuildapppickworker/install/lib/openrave_plugins"
+#define OPENRAVE_DATA_INSTALL_DIR "/home/mujin/mujin/jhbuildapppickworker/install/share/openrave"
+#define OPENRAVE_PYTHON_INSTALL_DIR "/home/mujin/mujin/jhbuildapppickworker/install/openravepy"
+#define OPENRAVE_LOCALE_INSTALL_DIR "/home/mujin/mujin/jhbuildapppickworker/install/share/locale"
 
 // the python path that OpenRAVE was compiled with
 #define OPENRAVE_PYTHON_EXECUTABLE ""
