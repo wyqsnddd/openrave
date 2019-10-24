@@ -23,9 +23,9 @@ ENDIF (LIBXML2_INCLUDE_DIR AND LIBXML2_LIBRARIES)
 IF (NOT WIN32)
    # use pkg-config to get the directories and then use these values
    # in the FIND_PATH() and FIND_LIBRARY() calls
-   INCLUDE(UsePkgConfig)
-   PKGCONFIG(libxml-2.0 _LibXml2IncDir _LibXml2LinkDir _LibXml2LinkFlags _LibXml2Cflags)
-   SET(LIBXML2_DEFINITIONS ${_LibXml2Cflags})
+   include(FindPkgConfig)
+   pkg_search_module(libxml-2.0 _LibXml2IncDir _LibXml2LinkDir _LibXml2LinkFlags _LibXml2Cflags)
+   set(LIBXML2_DEFINITIONS ${_LibXml2Cflags})
 ENDIF (NOT WIN32)
 
 FIND_PATH(LIBXML2_INCLUDE_DIR libxml/xpath.h
