@@ -57,6 +57,19 @@
 #include <string>
 #include <stdexcept>
 
+#include <iostream>
+#include <iomanip>
+#define _IKFAST_DISPLAY(RUN_CODE_HERE)                                            \
+    {                                                                          \
+        printf(                                                                  \
+            "\n%s:%d, [ %s "                                                       \
+            "]\n-----------------------------------------------------------------" \
+            "--------------\n",                                                    \
+            __FILE__, __LINE__, __func__ /*__PRETTY_FUNCTION__*/);                 \
+        RUN_CODE_HERE                                             \
+        printf("\n"); \
+    }
+
 // apparently there's a problem with higher versions of C++
 #if __cplusplus > 199711L || defined(__GXX_EXPERIMENTAL_CXX0X__)
 #include <typeinfo>
@@ -341,27 +354,56 @@ void init_python_bindings();
 
 #ifdef OPENRAVE_BININGS_PYARRAY
 
+// template <typename T>
+// void toPyArrayN(const T* data, size_t N, object obj)
+// {
+//     PyObject* pobj = obj.ptr();
+//     Py_buffer pybuf;
+//     PyObject_GetBuffer(pobj, &pybuf, PyBUF_SIMPLE);
+//     void *buf = pybuf.buf;
+//     T *p = (T*)buf;
+//     Py_XDECREF(pobj);
+//     memmove(p, data, N*sizeof(T));
+// }
+
 template <typename T>
 inline bpndarray toPyArrayN(const T* data, size_t N)
 {
-    np::dtype dt = np::dtype::get_builtin<T>();
-    if( N == 0 ) {
-        return np::array(boost::python::list(), dt);
+    boost::python::tuple shapeA = boost::python::make_tuple(1, N);
+    np::ndarray A = np::zeros(shapeA, np::dtype::get_builtin<T>());
+    for(uint8_t j = 0; j < N; ++j) {
+        A[0][j] = *(data + j);
     }
-
-    // https://www.boost.org/doc/libs/1_71_0/libs/python/doc/html/numpy/reference/ndarray.html
-    p::tuple shape = p::make_tuple(N);
-    p::tuple stride = p::make_tuple(N) ;
-    p::object own;
-    np::ndarray data_ex = np::from_data(data, dt, shape, stride, own);
-    return data_ex;
-    // npy_intp dims[] = {npy_intp(N)};
-    // PyObject *pyvalues = PyArray_SimpleNew(1,dims, PyArray_FLOAT);
-    // if( pvalues != NULL ) {
-    //     memcpy(PyArray_DATA(pyvalues),pvalues,N*sizeof(float));
-    // }
-    // return static_cast<bpndarray>(handle<>(pyvalues));
+    return A;
 }
+
+// template <typename T>
+// inline bpndarray toPyArrayN(const T* data, size_t N)
+// {
+//     np::dtype dt = np::dtype::get_builtin<T>();
+//     if( N == 0 ) {
+//         return np::array(boost::python::list(), dt);
+//     }
+
+//     _IKFAST_DISPLAY(
+//         for(size_t i = 0; i < N; ++i) {
+//             std::cout << *(data+i) << ", ";
+//         }
+//     );
+
+//     // https://www.boost.org/doc/libs/1_71_0/libs/python/doc/html/numpy/reference/ndarray.html
+//     p::tuple shape = p::make_tuple(N);
+//     p::tuple stride = p::make_tuple(N) ;
+//     p::object own;
+//     np::ndarray data_ex = np::from_data(data, dt, shape, stride, own);
+//     return data_ex;
+//     // npy_intp dims[] = {npy_intp(N)};
+//     // PyObject *pyvalues = PyArray_SimpleNew(1,dims, PyArray_FLOAT);
+//     // if( pvalues != NULL ) {
+//     //     memcpy(PyArray_DATA(pyvalues),pvalues,N*sizeof(float));
+//     // }
+//     // return static_cast<bpndarray>(handle<>(pyvalues));
+// }
 
 template <typename T>
 inline bpndarray toPyArrayN(const T* pvalues, std::vector<npy_intp>& dims)

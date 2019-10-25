@@ -326,14 +326,14 @@ inline RaveTransformMatrix<T> ExtractTransformMatrixType(const object& o)
 
 inline object toPyArrayRotation(const TransformMatrix& t)
 {
-    npy_intp dims[] = {3,3};
-    PyObject *pyvalues = PyArray_SimpleNew(2,dims, sizeof(dReal)==8 ? PyArray_DOUBLE : PyArray_FLOAT);
-    dReal* pdata = (dReal*)PyArray_DATA(pyvalues);
-    pdata[0] = t.m[0]; pdata[1] = t.m[1]; pdata[2] = t.m[2];
-    pdata[3] = t.m[4]; pdata[4] = t.m[5]; pdata[5] = t.m[6];
-    pdata[6] = t.m[8]; pdata[7] = t.m[9]; pdata[8] = t.m[10];
-    return toPyArrayN(pdata, 9);
-    // return static_cast<numeric::array>(handle<>(pyvalues));
+    boost::python::tuple shapeA = boost::python::make_tuple(3, 3);
+    np::ndarray A = np::zeros(shapeA, np::dtype::get_builtin<double>());
+    for(int i = 0; i < 3; ++i) {
+        for(int j = 0; j < 3; ++j) {
+            A[i][j] = t.m[4*i+j];
+        }
+    }
+    return A;
 }
 
 inline object toPyArray3(const std::vector<RaveVector<float> >& v)
