@@ -592,7 +592,7 @@ protected:
     static boost::scoped_ptr<ViewerManager> _singleton; ///< singleton
     static boost::once_flag _onceInitialize; ///< makes sure initialization is atomic
 
-};
+}; // class ViewerManager
 
 boost::scoped_ptr<ViewerManager> ViewerManager::_singleton(0);
 boost::once_flag ViewerManager::_onceInitialize = BOOST_ONCE_INIT;
@@ -2230,7 +2230,7 @@ std::string get_std_runtime_error_repr(std::runtime_error* p)
     return boost::str(boost::format("<std_exception('%s')>")%p->what());
 }
 
-}
+} // namespace openravepy
 
 BOOST_PYTHON_MODULE(openravepy_int)
 {
@@ -2244,8 +2244,15 @@ BOOST_PYTHON_MODULE(openravepy_int)
     // new
     Py_Initialize();
     np::initialize();
-    // was 
-    // import_array();
+
+    // expansion of the macro `import_array()` in 
+    // python3/lib/python3.7/site-packages/numpy/core/include/numpy/__multiarray_api.h
+    if (_import_array() < 0) {
+        PyErr_Print();
+        PyErr_SetString(PyExc_ImportError, "numpy.core.multiarray failed to import");
+        return;
+    }
+
     // boost::python::numeric::array::set_module_and_type("numpy", "ndarray");
     int_from_number<int>();
     int_from_number<uint8_t>();
