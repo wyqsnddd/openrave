@@ -73,7 +73,10 @@ if( HAVE_ALL_PYTHON_HEADERS )
     # on mac osx, python cannot import libraries with .dylib extension
     set_target_properties(${OPENRAVE_PYTHON_BINDING_NAME} PROPERTIES SUFFIX ".so")
   endif()
-  install(TARGETS ${OPENRAVE_PYTHON_BINDING_NAME} DESTINATION ${OPENRAVEPY_VER_INSTALL_DIR} COMPONENT ${COMPONENT_PREFIX}python)
+  install(TARGETS ${OPENRAVE_PYTHON_BINDING_NAME}
+    DESTINATION ${Python3_SITELIB}
+    COMPONENT ${COMPONENT_PREFIX}python
+  )
 
   ## ann bindings
   if( ANN_FOUND )
