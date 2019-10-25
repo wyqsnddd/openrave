@@ -20,3 +20,5 @@ openrave/src/build
 build
 
 .DS_Store
+src/3rdparty/pcre/config.h
+src/openrave/config.h
