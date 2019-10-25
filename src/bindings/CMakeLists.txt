@@ -56,7 +56,7 @@ if( HAVE_ALL_PYTHON_HEADERS )
   # stdc++ has to be included before opengl libraries due to some ATI bug (http://wiki.fifengine.de/Segfault_in_cxa_allocate_exception#Workaround)
   target_link_libraries(${OPENRAVE_PYTHON_BINDING_NAME} 
     PUBLIC ${STDC_LIBRARY} openrave openrave_core
-    boost_python37 boost_numpy37 
+    boost_python3${Python3_MINOR_VERSION} boost_numpy3${Python3_MINOR_VERSION} 
     dl util ${Python3_LIBRARY} ${CMAKE_THREAD_LIBS_INIT}
     # ${Python3_LIBRARY} ${Boost_PYTHON_LIBRARY} ${Boost_THREAD_LIBRARY} ${extralibs}
     # ${Python3_NUMPY_LIBRARY}

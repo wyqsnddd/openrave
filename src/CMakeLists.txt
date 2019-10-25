@@ -85,7 +85,7 @@ else()
 	set(Python3_INCLUDE_DIR       "${Python3_ROOT}/include/python3.${Python3_MINOR_VERSION}")
 	# ./configure --prefix=/home/mujin/python3/ --enable-shared
 	set(Python3_LIBRARY           "${Python3_ROOT}/lib/libpython3.${Python3_MINOR_VERSION}.so")
-	set(Python3_SITELIB           "${Python3_ROOT}/lib/libpython3.${Python3_MINOR_VERSION}/site-packages")
+	set(Python3_SITELIB           "${Python3_ROOT}/lib/python3.${Python3_MINOR_VERSION}/site-packages")
 endif()
 set(Python3_NUMPY_INCLUDE_DIR "${Python3_SITELIB}/numpy/core/include")
 set(Python3_NUMPY_LIBRARY_DIR "${Python3_SITELIB}/numpy/core/lib")
