@@ -7,19 +7,7 @@ if(NOT OPENRAVE_DISABLE_ASSERT_HANDLER)
   add_definitions("-DBOOST_ENABLE_ASSERT_HANDLER") # turns segfault into exception
 endif()
 
-# find_package(Python3 REQUIRED COMPONENTS Interpreter Development NumPy)
-message(STATUS "Python3_ROOT              = ${Python3_ROOT}")
-message(STATUS "Python3_EXECUTABLE        = ${Python3_EXECUTABLE}")
-message(STATUS "Python3_INCLUDE_DIR       = ${Python3_INCLUDE_DIR}")
-message(STATUS "Python3_LIBRARY           = ${Python3_LIBRARY}")
-message(STATUS "Python3_SITELIB           = ${Python3_SITELIB}")
-message(STATUS "Python3_FOUND             = ${Python3_FOUND}")
-message(STATUS "Python3_NUMPY_INCLUDE_DIR = ${Python3_NUMPY_INCLUDE_DIR}")
-message(STATUS "Python3_NUMPY_LIBRARY_DIR = ${Python3_NUMPY_LIBRARY_DIR}")
-
 set(OPENRAVE_PYTHON_BINDING_NAME openravepy)
-
-
 add_definitions(${Boost_CFLAGS})
 set(CMAKE_REQUIRED_INCLUDES ${Python3_INCLUDE_DIR} ${Boost_INCLUDE_DIR} ${REQUIRED_INCLUDES})
 set(CMAKE_REQUIRED_LIBRARIES ${Python3_LIBRARY} ${Boost_PYTHON_LIBRARY} ${Boost_THREAD_LIBRARY} ${Boost_SYSTEM_LIBRARY})
@@ -54,6 +42,10 @@ if( HAVE_ALL_PYTHON_HEADERS )
     openravepy_trajectory.cpp openravepy_viewer.cpp bindings.cpp docstrings.cpp
   )
   # stdc++ has to be included before opengl libraries due to some ATI bug (http://wiki.fifengine.de/Segfault_in_cxa_allocate_exception#Workaround)
+  if(APPLE)
+    set(Python3_MINOR_VERSION "7")
+  endif()
+
   target_link_libraries(${OPENRAVE_PYTHON_BINDING_NAME} 
     PUBLIC ${STDC_LIBRARY} openrave openrave_core
     boost_python3${Python3_MINOR_VERSION} boost_numpy3${Python3_MINOR_VERSION} 

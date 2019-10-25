@@ -90,6 +90,23 @@ endif()
 set(Python3_NUMPY_INCLUDE_DIR "${Python3_SITELIB}/numpy/core/include")
 set(Python3_NUMPY_LIBRARY_DIR "${Python3_SITELIB}/numpy/core/lib")
 
+string(REGEX MATCH "3.([0-9]+).([0-9]+)" python3_version_match "${Python3_VERSION}")
+set(Python3_MINOR_VERSION "${CMAKE_MATCH_1}")
+set(Python3_PATCH_VERSION "${CMAKE_MATCH_2}")
+
+message(STATUS "=======================================================")
+message(STATUS "Python3_ROOT              = ${Python3_ROOT}")
+message(STATUS "Python3_MINOR_VERSION     = ${Python3_MINOR_VERSION}")
+message(STATUS "Python3_PATCH_VERSION     = ${Python3_PATCH_VERSION}")
+message(STATUS "Python3_EXECUTABLE        = ${Python3_EXECUTABLE}")
+message(STATUS "Python3_INCLUDE_DIR       = ${Python3_INCLUDE_DIR}")
+message(STATUS "Python3_LIBRARY           = ${Python3_LIBRARY}")
+message(STATUS "Python3_SITELIB           = ${Python3_SITELIB}")
+message(STATUS "Python3_FOUND             = ${Python3_FOUND}")
+message(STATUS "Python3_NUMPY_INCLUDE_DIR = ${Python3_NUMPY_INCLUDE_DIR}")
+message(STATUS "Python3_NUMPY_LIBRARY_DIR = ${Python3_NUMPY_LIBRARY_DIR}")
+message(STATUS "=======================================================")
+
 # my compile flags
 set(CMAKE_CXX_FLAGS         "-fPIC -Wall -Wextra -Werror=return-type")# -fvisibility=hidden")
 set(CMAKE_CXX_FLAGS_DEBUG   "-O0 -g")
