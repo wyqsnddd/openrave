@@ -33,8 +33,14 @@ if( FCL_FOUND )
   STRING( REGEX REPLACE "[0-9]+.([0-9]+).[0-9]+" "\\1" FCL_MINOR_VERSION ${FCL_VERSION})
 
   if(FCL_MINOR_VERSION GREATER "4")
+    # PkgConfig could send the flags as a list, so convert to a string
+    set(openrave_FCL_LDFLAGS)
+    foreach(arg ${FCL_LDFLAGS})
+      set(openrave_FCL_LDFLAGS "${openrave_FCL_LDFLAGS} ${arg}")
+    endforeach()
+      
     set(CMAKE_REQUIRED_INCLUDES ${FCL_INCLUDE_DIRS} ${FCL_INCLUDEDIR})
-    set(CMAKE_REQUIRED_FLAGS "${PLUGIN_COMPILE_FLAGS} ${FCL_CFLAGS_OTHER} -std=c++11 ${PLUGIN_LINK_FLAGS} ${FCL_LDFLAGS}")
+    set(CMAKE_REQUIRED_FLAGS "${PLUGIN_COMPILE_FLAGS} ${FCL_CFLAGS_OTHER} -std=c++11 ${PLUGIN_LINK_FLAGS} ${openrave_FCL_LDFLAGS}")
     set(CMAKE_REQUIRED_LIBRARIES fcl)
     check_cxx_source_compiles("
       #include <fcl/broadphase/broadphase.h>
@@ -73,7 +79,7 @@ if( FCL_FOUND )
     if( CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX OR COMPILER_IS_CLANG)
       add_definitions("-std=c++11")
     endif()
-    set_target_properties(fclrave PROPERTIES COMPILE_FLAGS "${PLUGIN_COMPILE_FLAGS} ${FCL_CFLAGS_OTHER} -std=c++11" LINK_FLAGS "${PLUGIN_LINK_FLAGS} ${FCL_LDFLAGS}")
+    set_target_properties(fclrave PROPERTIES COMPILE_FLAGS "${PLUGIN_COMPILE_FLAGS} ${FCL_CFLAGS_OTHER} -std=c++11" LINK_FLAGS "${PLUGIN_LINK_FLAGS} ${openrave_FCL_LDFLAGS}")
     install(TARGETS fclrave DESTINATION ${OPENRAVE_PLUGINS_INSTALL_DIR} COMPONENT ${COMPONENT_PREFIX}plugin-fclrave)
   else()
     message(STATUS "Could not find FCL. Please install FCL (https://github.com/flexible-collision-library/fcl)")
