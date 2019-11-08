@@ -1643,7 +1643,7 @@ void QtOSGViewer::_SetTriangleMesh(const float* ppoints, int stride, const int* 
 {
     BOOST_ASSERT(ppoints!=NULL);
     int maxindex = -1;
-    osgindices->resizeElements(numTriangles*3);
+    osgindices->resize(numTriangles*3);
     if( pIndices != NULL ) {
         for(int i = 0; i < 3*numTriangles; ++i) {
             (*osgindices)[i] = pIndices[i];
