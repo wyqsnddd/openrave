@@ -9,18 +9,24 @@ endif()
 
 set(OPENRAVE_PYTHON_BINDING_NAME openravepy)
 add_definitions(${Boost_CFLAGS})
-set(CMAKE_REQUIRED_INCLUDES ${Python3_INCLUDE_DIR} ${Boost_INCLUDE_DIR} ${REQUIRED_INCLUDES})
-set(CMAKE_REQUIRED_LIBRARIES ${Python3_LIBRARY} ${Boost_PYTHON_LIBRARY} ${Boost_THREAD_LIBRARY} ${Boost_SYSTEM_LIBRARY})
+set(CMAKE_REQUIRED_INCLUDES ${PYTHON_INCLUDE_DIRS} ${Boost_INCLUDE_DIR} ${REQUIRED_INCLUDES})
+set(CMAKE_REQUIRED_LIBRARIES ${PYTHON_LIBRARIES} ${Boost_PYTHON_LIBRARY} ${Boost_THREAD_LIBRARY} ${Boost_SYSTEM_LIBRARY})
 set(CMAKE_REQUIRED_FLAGS ${Boost_CFLAGS} "-DCMAKE_BUILD_TYPE:STRING=Release")
 
 set(HAVE_ALL_PYTHON_HEADERS ON)
 set(HAVE_ALL_PYTHON_HEADERS ${HAVE_ALL_PYTHON_HEADERS} PARENT_SCOPE)
 if( HAVE_ALL_PYTHON_HEADERS )
   message(STATUS "python and boost-python found")
-  include_directories(${Python3_INCLUDE_DIR} ${Python3_NUMPY_INCLUDE_DIR}
+  include_directories(${PYTHON_INCLUDE_DIRS}
     ${OPENRAVE_INCLUDE_LOCAL_DIRS} ${OPENRAVE_CORE_INCLUDE_LOCAL_DIRS}
   )
   
+if( NOT WIN32 AND OPENRAVE_BIN_SUFFIX )
+  set(OPENRAVEPY_VER_NAME "_openravepy_${OPENRAVE_VERSION_MAJOR}_${OPENRAVE_VERSION_MINOR}")
+else()
+  set(OPENRAVEPY_VER_NAME "_openravepy_")
+endif()
+set(OPENRAVEPY_VER_INSTALL_DIR "${OPENRAVEPY_INSTALL_DIR}/${OPENRAVEPY_VER_NAME}") # used by openrave-config.cmake
   set(extralibs)
   if( CLOCK_GETTIME_FOUND )
     set(extralibs ${extralibs} rt)
@@ -48,8 +54,8 @@ if( HAVE_ALL_PYTHON_HEADERS )
 
   target_link_libraries(${OPENRAVE_PYTHON_BINDING_NAME} 
     PUBLIC ${STDC_LIBRARY} openrave openrave_core
-    boost_python3${Python3_MINOR_VERSION} boost_numpy3${Python3_MINOR_VERSION} 
-    dl util ${Python3_LIBRARY} ${CMAKE_THREAD_LIBS_INIT}
+    boost_python2${Python_MINOR_VERSION} boost_numpy2${Python_MINOR_VERSION} 
+    dl util ${Python_LIBRARY} ${CMAKE_THREAD_LIBS_INIT}
     # ${Python3_LIBRARY} ${Boost_PYTHON_LIBRARY} ${Boost_THREAD_LIBRARY} ${extralibs}
     # ${Python3_NUMPY_LIBRARY}
   )
@@ -66,7 +72,7 @@ if( HAVE_ALL_PYTHON_HEADERS )
     set_target_properties(${OPENRAVE_PYTHON_BINDING_NAME} PROPERTIES SUFFIX ".so")
   endif()
   install(TARGETS ${OPENRAVE_PYTHON_BINDING_NAME}
-    DESTINATION ${Python3_SITELIB}
+    DESTINATION ${OPENRAVEPY_VER_INSTALL_DIR}
     COMPONENT ${COMPONENT_PREFIX}python
   )
 
@@ -76,7 +82,7 @@ if( HAVE_ALL_PYTHON_HEADERS )
     include_directories(${ANN_INCLUDE_DIR})
     # stdc++ has to be included before opengl libraries due to some ATI bug (http://wiki.fifengine.de/  Segfault_in_cxa_allocate_exception#Workaround)
     target_link_libraries(pyANN_int 
-      PUBLIC ${STDC_LIBRARY} ANN ${Python3_LIBRARY} ${Boost_PYTHON_LIBRARY} ${Boost_THREAD_LIBRARY} ${extralibs}
+      PUBLIC ${STDC_LIBRARY} ANN ${PYTHON_LIBRARIES} ${Boost_PYTHON_LIBRARY} ${Boost_THREAD_LIBRARY} ${extralibs}
     ) # PRIVATE boost_assertion_failed)
     set_target_properties(pyANN_int 
       PROPERTIES PREFIX "" COMPILE_FLAGS "${ANN_CFLAGS}"
@@ -106,7 +112,7 @@ if( HAVE_ALL_PYTHON_HEADERS )
     include_directories(${CONVEXDECOMPOSITION_INCLUDE_DIR})
     # stdc++ has to be included before opengl libraries due to some ATI bug (http://wiki.fifengine.de/  Segfault_in_cxa_allocate_exception#Workaround)
     target_link_libraries(convexdecompositionpy 
-      PUBLIC ${STDC_LIBRARY} convexdecomposition ${Python3_LIBRARY} 
+      PUBLIC ${STDC_LIBRARY} convexdecomposition ${PYTHON_LIBRARIES} 
       ${Boost_PYTHON_LIBRARY} ${Boost_THREAD_LIBRARY} ${extralibs}
     ) # PRIVATE boost_assertion_failed)
     set_target_properties(convexdecompositionpy 
