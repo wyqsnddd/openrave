@@ -1,4 +1,5 @@
-#!/usr/bin/env @PYTHON_EXECUTABLE_NAME@
+#!/usr/bin/env python
+#@PYTHON_EXECUTABLE_NAME@
 # -*- coding: utf-8 -*-
 # Copyright (C) 2009-2012 Rosen Diankov <rosen.diankov@gmail.com>
 #
