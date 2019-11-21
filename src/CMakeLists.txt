@@ -108,6 +108,11 @@ endif()
 #message(STATUS "=======================================================")
 include(FindPythonInterp)
 find_package(PythonLibs 2)
+execute_process(
+      COMMAND ${PYTHON_EXECUTABLE} -c "from distutils.sysconfig import get_python_lib; from myrelpath import relpath; print relpath(get_python_lib(1,prefix='${CMAKE_INSTALL_PREFIX}'),'${CMAKE_INSTALL_PREFIX}')"
+      OUTPUT_VARIABLE OPENRAVE_PYTHON_INSTALL_DIR OUTPUT_STRIP_TRAILING_WHITESPACE
+      WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}"
+      RESULT_VARIABLE _python_failed2)
 
 # my compile flags
 set(CMAKE_CXX_FLAGS         "-fPIC -Wall -Wextra -Werror=return-type")# -fvisibility=hidden")
@@ -127,9 +132,9 @@ set(OPENRAVE_PLUGINS_INSTALL_DIR "lib/openrave_plugins" CACHE PATH "OpenRAVE plu
 set(OPENRAVE_LOCALE_INSTALL_DIR "share/locale" CACHE PATH "Relative path for OpenRAVE translation files")
 set(OPENRAVE_OCTAVE_INSTALL_DIR "${OPENRAVE_SHARE_DIR}/octave" CACHE PATH "OpenRAVE Octave bindings installation directory")
 set(OPENRAVE_MATLAB_INSTALL_DIR "${OPENRAVE_SHARE_DIR}/matlab" CACHE PATH "OpenRAVE MATLAB bindings installation directory")
-set(OPENRAVE_CMAKE_INSTALL_DIR "openrave" CACHE STRING "Directory to install the cmake config files.")
-set(OPENRAVE_INCLUDE_INSTALL_DIR "openrave" CACHE STRING "Directory name for header files")
-set(OPENRAVE_PYTHON_INSTALL_DIR "openravepy" CACHE STRING "Directory name for python files")
+set(OPENRAVE_CMAKE_INSTALL_DIR "openrave-${OPENRAVE_VERSION_MAJOR}.${OPENRAVE_VERSION_MINOR}" CACHE STRING "Directory to install the cmake config files.")
+set(OPENRAVE_INCLUDE_INSTALL_DIR "openrave-${OPENRAVE_VERSION_MAJOR}.${OPENRAVE_VERSION_MINOR}" CACHE STRING "Directory name for header files")
+#set(OPENRAVE_PYTHON_INSTALL_DIR "openravepy" CACHE STRING "Directory name for python files")
 
 message(STATUS "OPENRAVE_DATA_INSTALL_DIR    = ${OPENRAVE_DATA_INSTALL_DIR}")
 message(STATUS "OPENRAVE_PLUGINS_INSTALL_DIR = ${OPENRAVE_PLUGINS_INSTALL_DIR}")
@@ -236,4 +241,3 @@ add_custom_target(distclean
     ${MY_INSTALL_LIBRARY_DIR}/libopenrave*
     ${MY_INSTALL_CMAKE_DIR}/openrave
 )
-
