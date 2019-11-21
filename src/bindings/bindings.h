@@ -169,10 +169,12 @@ struct select_npy_type<uint32_t>
 
 // https://py3c.readthedocs.io/en/latest/reference.html
 // https://docs.python.org/3/c-api/unicode.html#c.PyUnicode_AsUTF8
+#if 0
 inline const char* PyString_AsString(PyObject* pystring) 
 {
     return PyUnicode_AsUTF8(pystring);
 }
+#endif
 
 inline boost::python::object ConvertStringToUnicode(const std::string& s)
 {

@@ -17,7 +17,7 @@ set(HAVE_ALL_PYTHON_HEADERS ON)
 set(HAVE_ALL_PYTHON_HEADERS ${HAVE_ALL_PYTHON_HEADERS} PARENT_SCOPE)
 if( HAVE_ALL_PYTHON_HEADERS )
   message(STATUS "python and boost-python found")
-  include_directories(${PYTHON_INCLUDE_DIRS}
+  include_directories(${PYTHON_INCLUDE_DIRS} ${OPENRAVE_PYTHON_INSTALL_ABSOLUTE_DIR}/numpy/core/include
     ${OPENRAVE_INCLUDE_LOCAL_DIRS} ${OPENRAVE_CORE_INCLUDE_LOCAL_DIRS}
   )
   
@@ -54,7 +54,7 @@ set(OPENRAVEPY_VER_INSTALL_DIR "${OPENRAVEPY_INSTALL_DIR}/${OPENRAVEPY_VER_NAME}
 
   target_link_libraries(${OPENRAVE_PYTHON_BINDING_NAME} 
     PUBLIC ${STDC_LIBRARY} openrave openrave_core
-    boost_python2${Python_MINOR_VERSION} boost_numpy2${Python_MINOR_VERSION} 
+    boost_python27 boost_numpy27 
     dl util ${Python_LIBRARY} ${CMAKE_THREAD_LIBS_INIT}
     # ${Python3_LIBRARY} ${Boost_PYTHON_LIBRARY} ${Boost_THREAD_LIBRARY} ${extralibs}
     # ${Python3_NUMPY_LIBRARY}
